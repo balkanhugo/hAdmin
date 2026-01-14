@@ -1,77 +1,59 @@
-**first step(1):**
+How to Add Admin Duty Feature in ESX (es_extended)
+Step 1: Edit player.lua
+
+Go to your es_extended folder and locate the player.lua file:
+
+es_extended/server/classes/player.lua
 
 
+Open the file and search for:
 
-go to your **es\_extended** and find **player.lua** file
-
-
-
-**es\_extended\\server\\classes** <-- in this file is the **player.lua** file
+self.metadata = metadata
 
 
+(Tip: use Ctrl + F to find it easily.)
 
-in code find self.metadata = metadata (**ctrl + f** and paste this self.metadata = metadata )
+Right below that line, add:
 
-
-
-when you find that code(self.metadata = metadata), put this one below it self.adminDuznost = false -- I repeat, put it below it, do not delete this code you found.
-
+self.adminDuznost = false
 
 
+⚠️ Do not delete the existing self.metadata = metadata line. Just add the new line right after it.
 
+Step 2: Add Functions for Admin Duty
 
-**next step(2):**
-
-
-
-stay in the same file and find this:
-
-
+Stay in the same file (player.lua) and find this function:
 
 function self.triggerEvent(eventName, ...)
-    assert(type(eventName) == "string", "eventName should be string!") -- It may be different, but it is mostly similar, depending on the version of the extended
+    assert(type(eventName) == "string", "eventName should be string!") -- May vary by version
     TriggerClientEvent(eventName, self.source, ...)
 end
 
 
-
-also put this code below that:
-
-
+Right below that function, add the following code:
 
 self.staviDuznost = function(bool)
     self.adminDuznost = bool
 end
-
-
 
 self.proveriDuznost = function()
     return self.adminDuznost
 end
 
 
+✅ This will create functions to set and check admin duty status.
 
-and that's it :D
+Step 3: Optional - Community Service Script
 
+Download this script for a working community service feature for players:
+https://github.com/tjscriptss/tj_communityservice
 
+References
 
-**I'll leave a link to the pictures here where you can see what it looks like for me:**
+You can check how it looks in my setup using these links:
 
-https://imgur.com/a/v5dX94S
+Imgur screenshots
 
-https://drive.google.com/file/d/1bS3gX0OIMH4YZAcuSS7QGBn23vdVQtSk/view?usp=sharing
+Google Drive file
 
-I put two links just in case one expires
-
-
-
-
-
-**next step(3):**
-
-
-
-**download** this https://github.com/tjscriptss/tj_communityservice for working community service for players
-
-
-lazicdev -- discord
+Discord: lazicdev
