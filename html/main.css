@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+
+body {
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif !important;
+    background-size: cover;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    text-shadow: 2px 2px 1px #3c495e;
+    z-index: -100;
+}
+
+.doorlock {
+    width: 200px;
+    height: 100px;
+    position: fixed;
+    color: white;
+    margin: 0 auto;
+    font-size: 1.1em;
+    vertical-align: top;
+    text-align: center;
+    transform: translate(-50%, -20%);
+}
