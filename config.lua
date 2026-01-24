@@ -1,23 +1,106 @@
 Config = {}
 
--- TAG --
+-- =================================
+-- ADMIN GROUP CONFIGURATION
+-- =================================
 
-Config.SeeOwnLabel = true
-Config.SeeDistance = 20
-Config.TextSize = 0.8
-Config.ZOffset = 1.0
-Config.NearCheckWait = 500
-Config.TagByPermission = false
+Config.Groups = {
+    -- Default group for non-admins
+    default = 'user',
 
-Config.GroupLabels = {
-    helper = "helper",
-    admin = "admin",
-    superadmin = "super admin",
-    headadmin = "head admin",
-	direktor = "direktor",
-    developer = "developer",
-    owner = "owner",
+    -- Order of groups (lowest to highest)
+    order = {
+        'user',
+        'helper',
+        'admin',
+        'spadmin',
+        'headadmin',
+        'direktor',
+        'developer',
+        'owner'
+    },
+
+    -- Display labels for each group
+    labels = {
+        user       = 'User',
+        helper     = 'Helper',
+        admin      = 'Admin',
+        spadmin    = 'Super Admin',
+        headadmin  = 'Head Admin',
+        direktor   = 'Direktor',
+        developer  = 'Developer',
+        owner      = 'Owner'
+    },
+
+    -- Numerical index for comparison (higher = more permissions)
+    index = {
+        user       = 1,
+        helper     = 2,
+        admin      = 3,
+        spadmin    = 4,
+        headadmin  = 5,
+        direktor   = 6,
+        developer  = 7,
+        owner      = 8
+    },
+
+    -- Which groups can set which other groups
+    permissions = {
+        spadmin   = { 'user', 'helper', 'admin' },
+        headadmin = { 'user', 'helper', 'admin', 'spadmin' },
+        direktor  = { 'user', 'helper', 'admin', 'spadmin', 'headadmin' },
+        developer = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor' },
+        owner     = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'developer' }
+    },
+
+    -- Messages for group management
+    messages = {
+        selfSet      = '❌ Ne mozete menjati sebi',
+        higherGroup  = '❌ Ne mozete setovati vecu grupu',
+        sameGroup    = '❌ Ne mozete setovati istu grupu kao vase'
+    }
 }
+
+-- Helper function to check if a group is an admin
+Config.IsAdminGroup = function(group)
+    return Config.Groups.index[group] and Config.Groups.index[group] > 1
+end
+
+-- =================================
+-- ADMIN TAG CONFIGURATION
+-- =================================
+
+Config.AdminTags = {
+    SeeOwnLabel = true,
+    SeeDistance = 20,
+    TextSize = 0.8,
+    ZOffset = 1.0,
+    NearCheckWait = 500,
+    TagByPermission = false,
+
+    -- Colors for each admin group
+    Colors = {
+        helper      = { r = 5,   g = 228, b = 64,  a = 1.0 },
+        admin       = { r = 5,   g = 228, b = 64,  a = 1.0 },
+        headadmin   = { r = 5,   g = 146, b = 228, a = 6.0 },
+        spadmin     = { r = 228, g = 109, b = 5,   a = 6.0 },
+        direktor    = { r = 5,   g = 146, b = 228, a = 6.0 },
+        developer   = { r = 238, g = 22,  b = 22,  a = 6.0 },
+        owner       = { r = 238, g = 22,  b = 22,  a = 6.0 }
+    },
+
+    DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
+}
+
+-- Legacy support (kept for compatibility)
+Config.SeeOwnLabel = Config.AdminTags.SeeOwnLabel
+Config.SeeDistance = Config.AdminTags.SeeDistance
+Config.TextSize = Config.AdminTags.TextSize
+Config.ZOffset = Config.AdminTags.ZOffset
+Config.NearCheckWait = Config.AdminTags.NearCheckWait
+Config.TagByPermission = Config.AdminTags.TagByPermission
+
+Config.GroupLabels = Config.Groups.labels
 
 Config.PermissionLabels = {
     [1] = "HELPER",
@@ -27,30 +110,40 @@ Config.PermissionLabels = {
     [5] = "~r~GOD",
 }
 
-Config.AdminTags = {
-    Colors = {
-        helper      = { r = 5,   g = 228, b = 64,  a = 1.0 },
-        admin       = { r = 5,   g = 228, b = 64,  a = 1.0 },
-        headadmin   = { r = 5,   g = 146, b = 228, a = 6.0 },
-        superadmin  = { r = 228, g = 109, b = 5,   a = 6.0 },
-        direktor    = { r = 5,   g = 146, b = 228, a = 6.0 },
-        developer   = { r = 238, g = 22,  b = 22,  a = 6.0 },
-        owner       = { r = 238, g = 22,  b = 22,  a = 6.0 }
-    },
+-- =================================
+-- PERMISSIONS CONFIGURATION
+-- =================================
 
-    DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
+Config.Permissions = {
+    noclip           = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    invisible        = { 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    heal             = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    revive           = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    setJob           = { 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    setGroup         = { 'headadmin', 'direktor', 'owner', 'developer' },
+    giveItem         = { 'headadmin', 'direktor', 'owner', 'developer' },
+    giveVehicle      = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    fixVehicle       = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    markeri          = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    gotoplayer       = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    bringplayer      = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
+    teleportwaypoint = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' }
 }
+
+-- =================================
+-- NOCLIP CONFIGURATION
+-- =================================
 
 Config.Noclip = {
     controls = {
-        openKey = 288,
-        goUp = 52,
-        goDown = 20,
-        turnLeft = 34,
-        turnRight = 35,
-        goForward = 32,
-        goBackward = 33,
-        changeSpeed = 21,
+        openKey      = 288,  -- F1
+        goUp         = 52,   -- Q
+        goDown       = 20,   -- Z
+        turnLeft     = 34,   -- A
+        turnRight    = 35,   -- D
+        goForward    = 32,   -- W
+        goBackward   = 33,   -- S
+        changeSpeed  = 21,   -- LSHIFT
     },
 
     speeds = {
@@ -78,213 +171,137 @@ Config.Noclip = {
     }
 }
 
--- ADMIN MENU --
+-- =================================
+-- ADMIN MENU CONFIGURATION
+-- =================================
 
 Config.OpenMenuCommand = 'openadmin'
 Config.OpenMenuKey = 'F4'
 Config.OpenMenuLabel = 'Otvori Admin Menu'
 
--- PERMISSIONS FOR COMMAND IN ADMIN MENU --
-
-Config.Groups = {
-    user = 1,
-    helper = 2,
-    admin = 3,
-    spadmin = 4,
-    headadmin = 5,
-    direktor = 6,
-    developer = 7,
-    owner = 8
-}
-
-Config.Permissions = {
-    noclip = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    invisible = { 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    heal = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    revive = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    setJob = { 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    setGroup = { 'headadmin', 'direktor', 'owner', 'developer' },
-    giveItem = { 'headadmin', 'direktor', 'owner', 'developer' },
-    giveVehicle = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    fixVehicle = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    markeri = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    gotoplayer = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    bringplayer = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    teleportwaypoint = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' }
-}
-
--- SETJOB FUNCTION --
-
-Config.Groups = {
-    default = 'user',
-
-    order = {
-        'user',
-        'helper',
-        'admin',
-        'spadmin',
-        'headadmin',
-        'direktor',
-        'developer',
-        'owner'
-    },
-
-    labels = {
-        user       = 'User',
-        helper     = 'Helper',
-        admin      = 'Admin',
-        spadmin    = 'Super Admin',
-        headadmin  = 'Head Admin',
-        direktor   = 'Direktor',
-        developer  = 'Developer',
-        owner      = 'Owner'
-    },
-
-    index = {
-        user       = 1,
-        helper     = 2,
-        admin      = 3,
-        spadmin    = 4,
-        headadmin  = 5,
-        direktor   = 6,
-        developer  = 7,
-        owner      = 8
-    },
-
-    permissions = {
-        spadmin   = { 'user', 'helper', 'admin' },
-        headadmin = { 'user', 'helper', 'admin', 'spadmin' },
-        direktor  = { 'user', 'helper', 'admin', 'spadmin', 'headadmin' },
-        developer = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor' },
-        owner     = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'developer' }
-    },
-
-    messages = {
-        selfSet      = '❌ Ne mozete menjati sebi',
-        higherGroup  = '❌ Ne mozete setovati vecu grupu',
-        sameGroup    = '❌ Ne mozete setovati istu grupu kao vase'
-    }
-}
-
--- REPORT --
+-- =================================
+-- REPORT SYSTEM CONFIGURATION
+-- =================================
 
 Config.Reports = {
-
+    -- Status display text
     StatusText = {
-        active = '🟢 Aktivno',
-        taken = '🟡 U obradi',
+        active    = '🟢 Aktivno',
+        taken     = '🟡 U obradi',
         completed = '✅ Zavrseno',
-        deleted = '❌ Obrisano'
+        deleted   = '❌ Obrisano'
     },
 
     StatusActionText = {
         active = '🟢 Aktivan',
-        taken = '🟡 U obradi'
+        taken  = '🟡 U obradi'
     },
 
+    -- Report categories
     Categories = {
-        player = 'Prijava igraca',
-        bug = 'Prijava baga',
-        cheater = 'Cheating',
+        player   = 'Prijava igraca',
+        bug      = 'Prijava baga',
+        cheater  = 'Cheating',
         cheating = 'Cheating',
-        admin = 'Prijava admina'
+        admin    = 'Prijava admina'
     },
 
+    -- Report locking settings
     Lock = {
-        Enable = true,            -- da li se report zakljucava
-        OnlyTakerCanAction = true,-- samo onaj koji je uzeo moze akcije
-        OnlyTakerCanDelete = true -- samo onaj koji je uzeo moze obrisati
+        Enable              = true,  -- Lock reports when taken
+        OnlyTakerCanAction  = true,  -- Only the admin who took it can act
+        OnlyTakerCanDelete  = true   -- Only the admin who took it can delete
     },
 
+    -- UI Text
     Text = {
-        Free = 'Slobodno',
-        TakenBy = 'Preuzeo: ',
-        Take = 'Preuzmi Report',
-        Release = 'Oslobodi Report',
-        TakeDesc = 'Preuzmi report da ga radis'
-    }
-}
-
-Config.Reports.Command = {
-
-    Name = 'report',
-
-    Name2 = 'communityservice', -- communityservice command put the same command here (best script for community service: https://youtu.be/4ZW8LyM1bSo?si=Iq2hU2w9vmlUz39V - brat trowe
-
-    Dialog = {
-        Title = 'Report',
-        SubmitText = 'Posalji',
+        Free        = 'Slobodno',
+        TakenBy     = 'Preuzeo: ',
+        Take        = 'Preuzmi Report',
+        Release     = 'Oslobodi Report',
+        TakeDesc    = 'Preuzmi report da ga radis'
     },
 
-    Fields = {
-        Title = {
-            label = 'Naslov',
-            placeholder = 'Kratak naslov',
-            required = true
+    -- Report command configuration
+    Command = {
+        Name  = 'report',
+        Name2 = 'communityservice', -- Community service command (for "Daj markere")
+
+        Dialog = {
+            Title      = 'Report',
+            SubmitText = 'Posalji',
         },
 
-        Category = {
-            label = 'Tip',
-            required = true
+        Fields = {
+            Title = {
+                label       = 'Naslov',
+                placeholder = 'Kratak naslov',
+                required    = true
+            },
+            Category = {
+                label    = 'Tip',
+                required = true
+            },
+            Details = {
+                label       = 'Detalji',
+                placeholder = 'Objasni problem',
+                required    = true
+            }
         },
 
-        Details = {
-            label = 'Detalji',
-            placeholder = 'Objasni problem',
-            required = true
+        Categories = {
+            { label = 'Cheating',        value = 'cheater' },
+            { label = 'Bug',             value = 'bug' },
+            { label = 'Prijava igraca',  value = 'player' },
+            { label = 'Prijava staffa',  value = 'admin' }
+        },
+
+        Notify = {
+            Success = 'Tvoj report je poslat adminima!',
+            Cancel  = 'Report otkazan'
         }
-    },
-
-    Categories = {
-        { label = 'Cheating', value = 'cheater' },
-        { label = 'Bug', value = 'bug' },
-        { label = 'Prijava igraca', value = 'player' },
-        { label = 'Prijava staffa', value = 'admin' }
-    },
-
-    Notify = {
-        Success = 'Tvoj report je poslat adminima!',
-        Cancel = 'Report otkazan'
     }
 }
 
--- LOGS --
+-- =================================
+-- DISCORD LOGGING CONFIGURATION
+-- =================================
 
 Config.AdminLogs = {
     revive = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     heal = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     setjob = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     setgroup = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     giveitem = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     givevehicle = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     gotoplayer = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     bringplayer = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     duty = {
         enabled = true,
-        webhook = "https://discord.com/api/webhooks/1460971512868638722/B9kplhcq6m_HY_m5f0Inr84r1yI0Vb1SrPIPSyHtxLpzrOMFmZrvLRNW0Cqr5ycz-2LS"
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
