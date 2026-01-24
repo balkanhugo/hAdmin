@@ -14,55 +14,50 @@ end)
 
 RegisterCommand('id', function(source)
     local admin = ESX.GetPlayerFromId(source)
+    if not admin then return end
+    
     local grupa = admin.getGroup()
-    if grupa == "admin" or grupa == "superadmin" or grupa == "helper" or grupa == "headadmin" or grupa == "developer" or grupa == "owner" or grupa == "direktor" then
+    
+    if IsAdmin(grupa) then
         if admin.proveriDuznost() == true then
             TriggerClientEvent('lazicAdmin:showIDs', source)
         else
-            --TriggerClientEvent('lmodciz_repair:nemasDozvoluIDDDDD', source)
-            print('nisi na duznosti')
+            print('Player ' .. source .. ' is not on duty')
         end
     else
-        --TriggerClientEvent('lmodciz_repair:nemasDozvolu', source)
-        print('nisi admin')
+        print('Player ' .. source .. ' is not admin')
     end
 end)
 
 ESX.RegisterServerCallback('adminmenu:isAdmin', function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
-
     if not xPlayer then
         cb(false)
         return
     end
 
     local group = xPlayer.getGroup()
-
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
-        cb(true)
-    else
-        cb(false)
-    end
+    cb(IsAdmin(group))
 end)
 
 RegisterNetEvent('adminmenu:checkPermission', function()
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
-
     if not xPlayer then return end
 
     local group = xPlayer.getGroup()
 
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
+    if IsAdmin(group) then
         TriggerClientEvent('adminmenu:open', src)
     else
-        print('no admin sinko')
+        print('Player ' .. src .. ' is not admin')
     end
 end)
 
 local function SendAdminLog(type, title, description, color)
     local cfg = Config.AdminLogs[type]
     if not cfg or not cfg.enabled or not cfg.webhook or cfg.webhook == "" then return end
+    if cfg.webhook:find("YOUR_WEBHOOK_HERE") then return end
 
     PerformHttpRequest(cfg.webhook, function() end, "POST", json.encode({
         username = "Admin Logs",
@@ -78,20 +73,20 @@ end
 ESX.RegisterServerCallback('admin:getPlayerCurrentGroup', function(source, cb, targetId)
     local xPlayer = ESX.GetPlayerFromId(targetId)
     if xPlayer then
-        local group = xPlayer.getGroup() or 'user'
+        local group = xPlayer.getGroup() or Config.Groups.default
         cb(group)
     else
-        cb('user')
+        cb(Config.Groups.default)
     end
 end)
 
 ESX.RegisterServerCallback('admin:getMyGroup', function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer then
-        local group = xPlayer.getGroup() or 'user'
+        local group = xPlayer.getGroup() or Config.Groups.default
         cb(group)
     else
-        cb('user')
+        cb(Config.Groups.default)
     end
 end)
 
@@ -122,10 +117,7 @@ ESX.RegisterServerCallback('admin:setPlayerGroup', function(source, cb, targetId
             return
         end
 
-        local adminIndex = Config.Groups.index[adminGroup] or 1
-        local newGroupIndex = Config.Groups.index[newGroup] or 1
-
-        if newGroupIndex >= adminIndex then
+        if IsGroupHigher(newGroup, adminGroup) or newGroup == adminGroup then
             cb(false, Config.Groups.messages.higherGroup)
             return
         end
@@ -162,7 +154,6 @@ ESX.RegisterServerCallback('admin:setPlayerGroup', function(source, cb, targetId
     cb(true, 'Grupa uspesno promenjena')
 end)
 
-
 RegisterServerEvent('admin:giveVehicleToPlayer')
 AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, spawnInVehicle)
     local src = source
@@ -176,7 +167,7 @@ AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, sp
 
     local group = xPlayer.getGroup()
     
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
+    if HasPermission(group, 'giveVehicle') then
         TriggerClientEvent('admin:spawnVehicleForPlayer', targetId, vehicleModel, spawnInVehicle)
         
         print(("[ADMIN] %s je poslao vozilo %s igracu %s"):format(
@@ -193,7 +184,6 @@ AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, sp
         )
         
         TriggerClientEvent('esx:showNotification', src, ('Poslao si vozilo %s igracu %s'):format(vehicleModel, GetPlayerName(targetId)))
-        
     else
         TriggerClientEvent('esx:showNotification', src, 'Nemate permisije za ovu akciju!')
     end
@@ -212,7 +202,7 @@ AddEventHandler('admin:giveItemToPlayer', function(targetId, itemName, count)
 
     local group = xPlayer.getGroup()
     
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
+    if HasPermission(group, 'giveItem') then
         local item = ESX.GetItemLabel(itemName)
         
         if not item then
@@ -237,9 +227,7 @@ AddEventHandler('admin:giveItemToPlayer', function(targetId, itemName, count)
         )
         
         TriggerClientEvent('esx:showNotification', src, ('Dao si %s x%d igracu %s'):format(itemName, count, GetPlayerName(targetId)))
-        
         TriggerClientEvent('esx:showNotification', targetId, ('Admin vam je dao %s x%d'):format(itemName, count))
-        
     else
         TriggerClientEvent('esx:showNotification', src, 'Nemate permisije za ovu akciju!')
     end
@@ -327,17 +315,7 @@ AddEventHandler('admin:enterDuty', function()
     local grupa = admin.getGroup()
     local steamName = GetPlayerName(src)
 
-    local allowedGroups = { "admin", "superadmin", "helper", "headadmin", "developer", "owner", "direktor" }
-
-    local allowed = false
-    for _, v in ipairs(allowedGroups) do
-        if grupa == v then
-            allowed = true
-            break
-        end
-    end
-
-    if not allowed then
+    if not IsAdmin(grupa) then
         TriggerClientEvent('ox_lib:notify', src, {
             description = 'Nemas dozvolu za admin meni!',
             type = 'error'
@@ -366,7 +344,6 @@ AddEventHandler('admin:enterDuty', function()
     )
 
     TriggerClientEvent('lazic:setaj_admine', -1, AdminPlayers)
-
     TriggerClientEvent('admin:onDutyEntered', src)
     TriggerClientEvent('admin:notifikacijausaoduznost', src)
 end)
@@ -385,7 +362,6 @@ AddEventHandler('admin:leaveDuty', function()
     end
 
     admin.staviDuznost(false)
-
     AdminPlayers[src] = nil
 
     SendAdminLog(
@@ -396,9 +372,7 @@ AddEventHandler('admin:leaveDuty', function()
     )
 
     TriggerClientEvent('lazic:removeAdminTag', -1, src)
-
     TriggerClientEvent('lazic:setaj_admine', -1, AdminPlayers)
-
     TriggerClientEvent('admin:notifikacijaizasaoduznost', src)
 end)
 
@@ -406,11 +380,11 @@ RegisterServerEvent('admin:teleportToPlayer')
 AddEventHandler('admin:teleportToPlayer', function(targetId, playerGroup)
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
-
     if not xPlayer then return end
 
     local group = xPlayer.getGroup()
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
+    
+    if HasPermission(group, 'gotoplayer') then
         local targetCoords = GetEntityCoords(GetPlayerPed(targetId))
         TriggerClientEvent('admin:doTeleport', source, targetCoords)
 
@@ -429,11 +403,11 @@ RegisterServerEvent('admin:teleportPlayerToMe')
 AddEventHandler('admin:teleportPlayerToMe', function(targetId, coords)
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
-
     if not xPlayer then return end
 
     local group = xPlayer.getGroup()
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
+    
+    if HasPermission(group, 'bringplayer') then
         TriggerClientEvent('admin:doTeleport', targetId, coords)
 
         SendAdminLog(
@@ -451,12 +425,11 @@ RegisterServerEvent('admin:healPlayer')
 AddEventHandler('admin:healPlayer', function(targetId, playerGroup)
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
-
     if not xPlayer then return end
 
     local group = xPlayer.getGroup()
     
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
+    if HasPermission(group, 'heal') then
         TriggerClientEvent('admin:doHeal', targetId)
         print("Admin " .. GetPlayerName(source) .. " je healovao igraca " .. GetPlayerName(targetId))
         TriggerClientEvent('esx:showNotification', source, 'Igrac ' .. GetPlayerName(targetId) .. ' je izlecen!')
@@ -480,8 +453,8 @@ AddEventHandler('admin:revivePlayer', function(targetId)
     if not xPlayer then return end
 
     local group = xPlayer.getGroup()
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
-
+    
+    if HasPermission(group, 'revive') then
         TriggerClientEvent('esx_ambulancejob:revive', targetId)
 
         print("Admin " .. GetPlayerName(src) .. " je revive-ovao igraca " .. GetPlayerName(targetId))
@@ -498,54 +471,6 @@ AddEventHandler('admin:revivePlayer', function(targetId)
         TriggerClientEvent('esx:showNotification', src, 'Nemate permisije za ovu akciju!')
     end
 end)
-
--- RegisterCommand("aduty", function(source)
---     local admin = ESX.GetPlayerFromId(source)
---     local grupa = admin.getGroup()
---     local steamName = GetPlayerName(source)
-
---     if grupa == "admin" or grupa == "superadmin" or grupa == "helper" or grupa == "headadmin"
---     or grupa == "developer" or grupa == "owner" or grupa == "direktor" then
-
---         if admin.proveriDuznost() == false then
-
---             admin.staviDuznost(true)
-
---             if AdminPlayers[source] == nil then
---                 AdminPlayers[source] = {
---                     source = source, 
---                     group = admin.getGroup()
---                 }
---             end
-
---             LogToDiscord(
---                 "Admin Duty | Ulazak na duznost",
---                 "**Steam:** " .. steamName ..
---                 "\n**ID:** " .. source ..
---                 "\n**Grupa:** " .. grupa,
---                 65280
---             )
-
---         else
-
---             admin.staviDuznost(false)
---             AdminPlayers[source] = nil
-
---             LogToDiscord(
---                 "Admin Duty | Izlazak sa duznosti",
---                 "**Steam:** " .. steamName ..
---                 "\n**ID:** " .. source ..
---                 "\n**Grupa:** " .. grupa,
---                 16711680
---             )
---         end
-
---     else
---         TriggerClientEvent('lmodciz_admin:nemasDozvolu', source)
---     end
-
---     TriggerClientEvent('lazic:setaj_admine', -1, AdminPlayers)
--- end)
 
 local cachedJobs = nil
 local jobsLoading = false
@@ -638,7 +563,7 @@ AddEventHandler('admin:setPlayerJob', function(targetId, jobName, grade)
 
     local group = xPlayer.getGroup()
     
-    if group == 'admin' or group == 'superadmin' or group == 'helper' or group == 'developer' or group == 'headadmin' or group == 'direktor' or group == 'owner' then
+    if HasPermission(group, 'setJob') then
         targetPlayer.setJob(jobName, grade)
         
         print(("[ADMIN] %s je promenio posao igracu %s na %s (grade: %s)"):format(
@@ -662,6 +587,7 @@ AddEventHandler('admin:setPlayerJob', function(targetId, jobName, grade)
     end
 end)
 
+-- REPORT SYSTEM
 local reports = {}
 local lastReport = {}
 local REPORT_COOLDOWN = 15 * 60
@@ -698,9 +624,10 @@ AddEventHandler('reports:createReport', function(title, category, details)
         createdAt = currentTime
     }
 
+    -- Notify all online admins who are on duty
     for k,v in pairs(ESX.GetPlayers()) do
         local admin = ESX.GetPlayerFromId(v)
-        if admin and admin.get('group') ~= 'user' then
+        if admin and IsAdmin(admin.get('group')) then
             if admin.proveriDuznost() == true then
                 TriggerClientEvent('ox_lib:notify', v, {
                     title = "Novi Report",
@@ -725,7 +652,7 @@ AddEventHandler('reports:updateReport', function(reportId, action)
     if not report then return end
 
     local xPlayer = ESX.GetPlayerFromId(src)
-    if not xPlayer or xPlayer.get('group') == 'user' then return end
+    if not xPlayer or not IsAdmin(xPlayer.get('group')) then return end
 
     local adminName = GetPlayerName(src)
 
@@ -773,9 +700,10 @@ AddEventHandler('reports:updateReport', function(reportId, action)
         reports[reportId] = nil
     end
 
+    -- Update all admins
     for _, v in pairs(ESX.GetPlayers()) do
         local admin = ESX.GetPlayerFromId(v)
-        if admin and admin.get('group') ~= 'user' then
+        if admin and IsAdmin(admin.get('group')) then
             TriggerClientEvent('reports:updateClient', v, reportId, report)
         end
     end
@@ -784,9 +712,8 @@ end)
 RegisterNetEvent('admin:sendMessageToPlayer')
 AddEventHandler('admin:sendMessageToPlayer', function(playerId, message)
     local src = source
-
     local xPlayer = ESX.GetPlayerFromId(src)
-    if not xPlayer or xPlayer.get('group') == 'user' then return end
+    if not xPlayer or not IsAdmin(xPlayer.get('group')) then return end
 
     local adminName = GetPlayerName(src)
 
