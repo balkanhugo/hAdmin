@@ -2,9 +2,10 @@ fx_version 'adamant'
 
 game 'gta5'
 
-description 'Lazic Admin System + Report System + Admin Tag'
+description 'hAdmin'
+author 'Lazic and chiaroscuric'
 lua54 'yes'
-version '1.0.2'
+version '1.0.3'
 legacyversion '1.9.1'
 
 server_script {
@@ -18,6 +19,7 @@ client_script {
 
 shared_scripts {
 	'config.lua',
+	'shared/utils.lua',
 	'@es_extended/imports.lua',
 	'@ox_lib/init.lua'
 }
