@@ -116,8 +116,9 @@ For issues or questions:
 ## Credits
 
 **Author:** lazicdev & chiaroscuric 
-**Version:** 1.0.2
+**Version:** 1.0.3
 
 ## License
 
 This is a free resource for the FiveM community.
+
