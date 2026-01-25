@@ -264,4 +264,60 @@ Locales['hr'] = {
     ['metadata_current_group'] = 'Trenutna grupa',
     ['metadata_warning'] = 'Upozorenje',
     ['metadata_status'] = 'Status',
+
+    -- =================================
+    -- COMMUNITY SERVICE TRANSLATIONS (MARKERI)
+    -- =================================
+    
+    -- Main Menu
+    ['clean_trash'] = 'Ocisti Smece',
+    ['cleaning_trash'] = 'Ciscenje Smeca',
+    ['remairing_actions'] = 'Preostale akcije: %d',
+    ['comm_service_menu'] = 'Meni za Markere',
+    ['send_player'] = 'Posalji Igraca na Markere',
+    ['comm_service_count'] = 'Dodeli markere igracu',
+    
+    -- Input Fields
+    ['player_id'] = 'ID Igraca',
+    ['player_id_desc'] = 'Unesi server ID igraca',
+    ['actions'] = 'Akcije',
+    ['actions_desc'] = 'Broj akcija koje treba zavrsiti',
+    ['reason'] = 'Razlog',
+    ['reason_desc'] = 'Razlog za dodelu markera',
+    
+    -- Active Players View
+    ['active_player_wiew'] = 'Pregledaj Aktivne Igrace',
+    ['active_player_desc'] = 'Pogledaj listu igraca na markerima',
+    ['remaining_resaon'] = 'Preostalo: %d/%d | Razlog: %s',
+    ['actions_for'] = 'Akcije za %s',
+    ['active_players'] = 'Aktivni Igraci',
+    
+    -- Player Actions
+    ['remove_service'] = 'Skini sa Markera',
+    ['remove_service_desc'] = 'Ukloni igraca sa markera',
+    ['edit_actions'] = 'Izmeni Akcije',
+    ['edit_actions_desc'] = 'Dodaj ili ukloni akcije ovom igracu',
+    
+    -- Add/Remove Actions
+    ['add_actions'] = 'Dodaj Akcije',
+    ['add_actions_desc'] = 'Dodaj dodatne akcije',
+    ['remove_actions'] = 'Ukloni Akcije',
+    ['remove_actions_desc'] = 'Ukloni akcije od igraca',
+    ['number_actions'] = 'Broj Akcija',
+    ['number_add_description'] = 'Unesi broj akcija za dodavanje',
+    ['number_remove_description'] = 'Unesi broj akcija za uklanjanje',
+    
+    -- Notifications
+    ['finished'] = 'Zavrsio si svoje markere',
+    ['no_perm'] = 'Nisi ovlascen za ovo',
+    ['need_resaon'] = 'Moras navesti razlog',
+    ['no_com_service'] = 'Igrac nije na markerima',
+    ['added_markers_to'] = 'Dodato %d markera igracu %s',
+    ['removed_markers_from'] = 'Uklonjeno %d markera igracu %s',
+    
+    -- Nearby Players
+    ['no_nearby_players'] = 'Nema igraca u blizini',
+    ['send_to_service'] = 'Posalji na markere',
+    ['select_player'] = 'Izaberi Igraca',
+    ['select_nearby_player'] = 'Izaberi najblizeg igraca',
 }
