@@ -121,12 +121,12 @@ Citizen.CreateThread(function()
                 local bojaTag = getAdminTagColor(v.group)
                 local z = adminCoords.z + Config.AdminTags.ZOffset
 
-                local label = Config.TagByPermission and Config.PermissionLabels[v.permission] or
-                    ' ~w~[ ' .. Config.GroupLabels[v.group] .. ' ~w~] ' .. GetPlayerName(playerServerID)
+                local label = Config.AdminTags.TagByPermission and Config.PermissionLabels[v.permission] or
+                    ' ~w~[ ' .. Config.Groups.labels[v.group] .. ' ~w~] ' .. GetPlayerName(playerServerID)
 
                 if IsEntityVisible(adminPed) then
                     draw3dNUI(
-                        "<span style='color:rgba("..bojaTag.."); font-size:1.8vh;'>[ "..Config.GroupLabels[v.group].." ]</span> <br> "..GetPlayerName(playerServerID),
+                        "<span style='color:rgba("..bojaTag.."); font-size:1.8vh;'>[ "..Config.Groups.labels[v.group].." ]</span> <br> "..GetPlayerName(playerServerID),
                         adminCoords + vector3(0.0,0.0,1.1),
                         'ids-'..playerServerID
                     )
