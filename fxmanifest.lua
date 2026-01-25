@@ -5,7 +5,7 @@ game 'gta5'
 description 'hAdmin'
 author 'Lazic and chiaroscuric'
 lua54 'yes'
-version '1.0.3'
+version '1.0.4'
 legacyversion '1.9.1'
 
 server_script {
@@ -18,6 +18,8 @@ client_script {
 }
 
 shared_scripts {
+	'shared/locale.lua',
+	'locales/*.lua',
 	'config.lua',
 	'shared/utils.lua',
 	'@es_extended/imports.lua',
