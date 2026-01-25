@@ -95,7 +95,7 @@ ESX.RegisterServerCallback('admin:setPlayerGroup', function(source, cb, targetId
     local target = ESX.GetPlayerFromId(targetId)
     
     if not admin or not target then
-        cb(false, 'Igrac nije pronadjen')
+        cb(false, _('player_not_found'))
         return
     end
 
@@ -113,24 +113,24 @@ ESX.RegisterServerCallback('admin:setPlayerGroup', function(source, cb, targetId
         end
 
         if not canSet then
-            cb(false, 'Nemate dozvolu za ovu grupu')
+            cb(false, _('no_permission_group'))
             return
         end
 
         if IsGroupHigher(newGroup, adminGroup) or newGroup == adminGroup then
-            cb(false, Config.Groups.messages.higherGroup)
+            cb(false, _('cannot_set_higher'))
             return
         end
 
         if source == targetId then
-            cb(false, Config.Groups.messages.selfSet)
+            cb(false, _('cannot_set_yourself'))
             return
         end
     end
 
     target.setGroup(newGroup)
 
-    print(('^5[ADMIN] ^7%s (ID: %s) je setovao grupu %s igracu %s (ID: %s). Razlog: %s^7'):format(
+    print(('^5[ADMIN] ^7%s (ID: %s) set group %s to player %s (ID: %s). Reason: %s^7'):format(
         admin.getName(), source, newGroup, target.getName(), targetId, reason
     ))
 
@@ -143,15 +143,15 @@ ESX.RegisterServerCallback('admin:setPlayerGroup', function(source, cb, targetId
 
     if targetId ~= source then
         TriggerClientEvent('ox_lib:notify', targetId, {
-            title = "Grupa Promenjena",
-            description = "Vasa grupa je promenjena u: " .. newGroup .. " od strane " .. admin.getName(),
+            title = _('set_group'),
+            description = _('group_changed_notification') .. newGroup .. _('by_admin') .. admin.getName(),
             type = "inform",
             duration = 5000,
             position = "top-right"
         })
     end
 
-    cb(true, 'Grupa uspesno promenjena')
+    cb(true, _('group_changed', target.getName()))
 end)
 
 RegisterServerEvent('admin:giveVehicleToPlayer')
@@ -161,7 +161,7 @@ AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, sp
     local targetPlayer = ESX.GetPlayerFromId(targetId)
     
     if not xPlayer or not targetPlayer then
-        TriggerClientEvent('esx:showNotification', src, 'Igrac nije pronadjen!')
+        TriggerClientEvent('esx:showNotification', src, _('player_not_found'))
         return
     end
 
@@ -170,7 +170,7 @@ AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, sp
     if HasPermission(group, 'giveVehicle') then
         TriggerClientEvent('admin:spawnVehicleForPlayer', targetId, vehicleModel, spawnInVehicle)
         
-        print(("[ADMIN] %s je poslao vozilo %s igracu %s"):format(
+        print(("[ADMIN] %s gave vehicle %s to player %s"):format(
             GetPlayerName(src),
             vehicleModel,
             GetPlayerName(targetId)
@@ -183,9 +183,9 @@ AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, sp
             10181046
         )
         
-        TriggerClientEvent('esx:showNotification', src, ('Poslao si vozilo %s igracu %s'):format(vehicleModel, GetPlayerName(targetId)))
+        TriggerClientEvent('esx:showNotification', src, _('sent_vehicle', vehicleModel, GetPlayerName(targetId)))
     else
-        TriggerClientEvent('esx:showNotification', src, 'Nemate permisije za ovu akciju!')
+        TriggerClientEvent('esx:showNotification', src, _('no_permission'))
     end
 end)
 
@@ -196,7 +196,7 @@ AddEventHandler('admin:giveItemToPlayer', function(targetId, itemName, count)
     local targetPlayer = ESX.GetPlayerFromId(targetId)
     
     if not xPlayer or not targetPlayer then
-        TriggerClientEvent('esx:showNotification', src, 'Igrac nije pronadjen!')
+        TriggerClientEvent('esx:showNotification', src, _('player_not_found'))
         return
     end
 
@@ -206,13 +206,13 @@ AddEventHandler('admin:giveItemToPlayer', function(targetId, itemName, count)
         local item = ESX.GetItemLabel(itemName)
         
         if not item then
-            TriggerClientEvent('esx:showNotification', src, 'Item ne postoji!')
+            TriggerClientEvent('esx:showNotification', src, _('item_not_exist'))
             return
         end
         
         targetPlayer.addInventoryItem(itemName, count)
         
-        print(("[ADMIN] %s je dao item %s x%d igracu %s"):format(
+        print(("[ADMIN] %s gave item %s x%d to player %s"):format(
             GetPlayerName(src),
             itemName,
             count,
@@ -226,10 +226,10 @@ AddEventHandler('admin:giveItemToPlayer', function(targetId, itemName, count)
             3447003
         )
         
-        TriggerClientEvent('esx:showNotification', src, ('Dao si %s x%d igracu %s'):format(itemName, count, GetPlayerName(targetId)))
-        TriggerClientEvent('esx:showNotification', targetId, ('Admin vam je dao %s x%d'):format(itemName, count))
+        TriggerClientEvent('esx:showNotification', src, _('gave_item', itemName, count, GetPlayerName(targetId)))
+        TriggerClientEvent('esx:showNotification', targetId, _('admin_gave_item', itemName, count))
     else
-        TriggerClientEvent('esx:showNotification', src, 'Nemate permisije za ovu akciju!')
+        TriggerClientEvent('esx:showNotification', src, _('no_permission'))
     end
 end)
 
@@ -317,7 +317,7 @@ AddEventHandler('admin:enterDuty', function()
 
     if not IsAdmin(grupa) then
         TriggerClientEvent('ox_lib:notify', src, {
-            description = 'Nemas dozvolu za admin meni!',
+            description = _('no_admin_permission'),
             type = 'error'
         })
         return
@@ -395,7 +395,7 @@ AddEventHandler('admin:teleportToPlayer', function(targetId, playerGroup)
             9807270
         )
     else
-        print("Player " .. source .. " nema permisije za teleport!")
+        print("Player " .. source .. " doesn't have permission for teleport!")
     end
 end)
 
@@ -417,7 +417,7 @@ AddEventHandler('admin:teleportPlayerToMe', function(targetId, coords)
             15158332
         )
     else
-        print("Player " .. source .. " nema permisije za teleport!")
+        print("Player " .. source .. " doesn't have permission for teleport!")
     end
 end)
 
@@ -431,8 +431,8 @@ AddEventHandler('admin:healPlayer', function(targetId, playerGroup)
     
     if HasPermission(group, 'heal') then
         TriggerClientEvent('admin:doHeal', targetId)
-        print("Admin " .. GetPlayerName(source) .. " je healovao igraca " .. GetPlayerName(targetId))
-        TriggerClientEvent('esx:showNotification', source, 'Igrac ' .. GetPlayerName(targetId) .. ' je izlecen!')
+        print("Admin " .. GetPlayerName(source) .. " healed player " .. GetPlayerName(targetId))
+        TriggerClientEvent('esx:showNotification', source, _('player_healed', GetPlayerName(targetId)))
 
         SendAdminLog(
             "heal",
@@ -441,8 +441,8 @@ AddEventHandler('admin:healPlayer', function(targetId, playerGroup)
             65280
         )
     else
-        print("Player " .. GetPlayerName(source) .. " nema permisije za heal!")
-        TriggerClientEvent('esx:showNotification', source, 'Nemate permisije za ovu akciju!')
+        print("Player " .. GetPlayerName(source) .. " doesn't have permission for heal!")
+        TriggerClientEvent('esx:showNotification', source, _('no_permission'))
     end
 end)
 
@@ -457,8 +457,8 @@ AddEventHandler('admin:revivePlayer', function(targetId)
     if HasPermission(group, 'revive') then
         TriggerClientEvent('esx_ambulancejob:revive', targetId)
 
-        print("Admin " .. GetPlayerName(src) .. " je revive-ovao igraca " .. GetPlayerName(targetId))
-        TriggerClientEvent('esx:showNotification', src, 'Igrac ' .. GetPlayerName(targetId) .. ' je ozivljen!')
+        print("Admin " .. GetPlayerName(src) .. " revived player " .. GetPlayerName(targetId))
+        TriggerClientEvent('esx:showNotification', src, _('player_revived', GetPlayerName(targetId)))
 
         SendAdminLog(
             "revive",
@@ -467,8 +467,8 @@ AddEventHandler('admin:revivePlayer', function(targetId)
             16711680
         )
     else
-        print("Player " .. GetPlayerName(src) .. " nema permisije za revive!")
-        TriggerClientEvent('esx:showNotification', src, 'Nemate permisije za ovu akciju!')
+        print("Player " .. GetPlayerName(src) .. " doesn't have permission for revive!")
+        TriggerClientEvent('esx:showNotification', src, _('no_permission'))
     end
 end)
 
@@ -535,10 +535,10 @@ ESX.RegisterServerCallback('admin:getPlayerCurrentJob', function(source, cb, tar
             })
         elseif attempts > 10 then
             cb({
-                name = "Nepoznato",
-                label = "Nepoznato",
+                name = _('unknown'),
+                label = _('unknown'),
                 grade = 0,
-                grade_label = "Nepoznato",
+                grade_label = _('unknown'),
                 salary = 0
             })
         else
@@ -557,7 +557,7 @@ AddEventHandler('admin:setPlayerJob', function(targetId, jobName, grade)
     local targetPlayer = ESX.GetPlayerFromId(targetId)
     
     if not xPlayer or not targetPlayer then
-        TriggerClientEvent('esx:showNotification', src, 'Igrac nije pronadjen!')
+        TriggerClientEvent('esx:showNotification', src, _('player_not_found'))
         return
     end
 
@@ -566,15 +566,15 @@ AddEventHandler('admin:setPlayerJob', function(targetId, jobName, grade)
     if HasPermission(group, 'setJob') then
         targetPlayer.setJob(jobName, grade)
         
-        print(("[ADMIN] %s je promenio posao igracu %s na %s (grade: %s)"):format(
+        print(("[ADMIN] %s changed job for player %s to %s (grade: %s)"):format(
             GetPlayerName(src),
             GetPlayerName(targetId),
             jobName,
             grade
         ))
         
-        TriggerClientEvent('esx:showNotification', src, ('Promenjen posao za %s'):format(GetPlayerName(targetId)))
-        TriggerClientEvent('esx:showNotification', targetId, 'Admin vam je promenio posao!')
+        TriggerClientEvent('esx:showNotification', src, _('job_changed', GetPlayerName(targetId), jobName, grade))
+        TriggerClientEvent('esx:showNotification', targetId, _('admin_changed_job'))
 
         SendAdminLog(
             "setjob",
@@ -583,7 +583,7 @@ AddEventHandler('admin:setPlayerJob', function(targetId, jobName, grade)
             16776960
         )
     else
-        TriggerClientEvent('esx:showNotification', src, 'Nemate permisije za ovu akciju!')
+        TriggerClientEvent('esx:showNotification', src, _('no_permission'))
     end
 end)
 
@@ -600,8 +600,8 @@ AddEventHandler('reports:createReport', function(title, category, details)
     if lastReport[src] and (currentTime - lastReport[src] < REPORT_COOLDOWN) then
         local remaining = REPORT_COOLDOWN - (currentTime - lastReport[src])
         TriggerClientEvent('ox_lib:notify', src, {
-            title = "Report Cooldown",
-            description = "Mozete poslati novi report za jos " .. math.ceil(remaining/60) .. " minuta.",
+            title = _('report_cooldown'),
+            description = _('report_cooldown_msg', math.ceil(remaining/60)),
             type = "error",
             duration = 5000,
             position = "top-right"
@@ -615,7 +615,7 @@ AddEventHandler('reports:createReport', function(title, category, details)
     
     reports[id] = {
         playerId = src,
-        steamName = steamName or "Nepoznato",
+        steamName = steamName or _('unknown'),
         title = title,
         category = category,
         details = details,
@@ -630,8 +630,8 @@ AddEventHandler('reports:createReport', function(title, category, details)
         if admin and IsAdmin(admin.get('group')) then
             if admin.proveriDuznost() == true then
                 TriggerClientEvent('ox_lib:notify', v, {
-                    title = "Novi Report",
-                    description = steamName .. " je poslao report: " .. title,
+                    title = _('new_report'),
+                    description = steamName .. _('sent_report') .. title,
                     type = "inform",
                     duration = 5000,
                     position = "top-right"
@@ -639,6 +639,14 @@ AddEventHandler('reports:createReport', function(title, category, details)
             end
         end
     end
+    
+    TriggerClientEvent('ox_lib:notify', src, {
+        title = _('report'),
+        description = _('report_sent'),
+        type = "success",
+        duration = 5000,
+        position = "top-right"
+    })
 end)
 
 ESX.RegisterServerCallback('reports:getAllReports', function(source, cb)
@@ -659,8 +667,8 @@ AddEventHandler('reports:updateReport', function(reportId, action)
     if action == 'take' then
         if report.takenBy ~= nil then
             TriggerClientEvent('ox_lib:notify', src, {
-                title = 'Report',
-                description = 'Ovaj report je vec preuzet!',
+                title = _('report'),
+                description = _('report_already_taken'),
                 type = 'error'
             })
             return
@@ -673,8 +681,8 @@ AddEventHandler('reports:updateReport', function(reportId, action)
     elseif action == 'release' then
         if report.takenBy ~= src then
             TriggerClientEvent('ox_lib:notify', src, {
-                title = 'Report',
-                description = 'Ne mozes osloboditi report koji nisi preuzeo!',
+                title = _('report'),
+                description = _('report_not_yours'),
                 type = 'error'
             })
             return
@@ -691,8 +699,8 @@ AddEventHandler('reports:updateReport', function(reportId, action)
     elseif action == 'delete' then
         if report.takenBy ~= src then
             TriggerClientEvent('ox_lib:notify', src, {
-                title = 'Report',
-                description = 'Samo admin koji je preuzeo report moze da ga obrise!',
+                title = _('report'),
+                description = _('only_taker_can_delete'),
                 type = 'error'
             })
             return
@@ -718,7 +726,7 @@ AddEventHandler('admin:sendMessageToPlayer', function(playerId, message)
     local adminName = GetPlayerName(src)
 
     TriggerClientEvent('ox_lib:notify', playerId, {
-        title = 'Poruka od Admina',
+        title = _('message_from_admin'),
         description = message,
         type = 'inform',
         position = 'top',
