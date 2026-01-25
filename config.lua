@@ -116,16 +116,6 @@ Config.AdminTags = {
     DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
 }
 
--- Legacy support (kept for compatibility)
-Config.SeeOwnLabel = Config.AdminTags.SeeOwnLabel
-Config.SeeDistance = Config.AdminTags.SeeDistance
-Config.TextSize = Config.AdminTags.TextSize
-Config.ZOffset = Config.AdminTags.ZOffset
-Config.NearCheckWait = Config.AdminTags.NearCheckWait
-Config.TagByPermission = Config.AdminTags.TagByPermission
-
-Config.GroupLabels = Config.Groups.labels
-
 Config.PermissionLabels = {
     [1]  = "USER",
     [2]  = "PROBNI ADMIN",
@@ -431,3 +421,4 @@ Config.AdminLogs = {
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
+
