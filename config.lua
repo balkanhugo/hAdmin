@@ -10,36 +10,80 @@ Config.Locale = 'hr' -- Available: 'en', 'hr'
 -- =================================
 
 Config.Groups = {
-    -- Default group for non-admins
     default = 'user',
 
     -- Order of groups (lowest to highest)
     order = {
         'user',
-        'admin'
+        'probniadmin',
+        'admin',
+        'roleplayadmin',
+        'eventadmin',
+        'headstaff',
+        'vodjalidera',
+        'vodjastaffa',
+        'manager',
+        'osnivac',
+        'jaankeza',
+        'developer'
     },
 
-    -- Display labels for each group
     labels = {
-        user  = 'User',
-        admin = 'Admin'
+        user          = 'User',
+        probniadmin   = 'Probni Admin',
+        admin         = 'Admin',
+        roleplayadmin = 'Roleplay Admin',
+        eventadmin    = 'Event Admin',
+        headstaff     = 'Head Staff',
+        vodjalidera   = 'Vodja Lidera',
+        vodjastaffa   = 'Vodja Staffa',
+        manager       = 'Manager',
+        osnivac       = 'Osnivac',
+        jaankeza      = 'Jaankeza',
+        developer     = 'Developer'
     },
 
-    -- Numerical index for comparison (higher = more permissions)
     index = {
-        user  = 1,
-        admin = 2
+        user          = 1,
+        probniadmin   = 2,
+        admin         = 3,
+        roleplayadmin = 4,
+        eventadmin    = 5,
+        headstaff     = 6,
+        vodjalidera   = 7,
+        vodjastaffa   = 8,
+        manager       = 9,
+        osnivac       = 10,
+        jaankeza      = 11,
+        developer     = 12
     },
 
-    -- Which groups can set which other groups
+    -- Who can set which groups
     permissions = {
-        admin = { 'user', 'admin' }
+        developer = {
+            'user','probniadmin','admin','roleplayadmin','eventadmin',
+            'headstaff','vodjalidera','vodjastaffa','manager','osnivac','jaankeza'
+        },
+
+        jaankeza = {
+            'user','probniadmin','admin','roleplayadmin','eventadmin',
+            'headstaff','vodjalidera','vodjastaffa','manager','osnivac'
+        },
+
+        osnivac = {
+            'user','probniadmin','admin','roleplayadmin','eventadmin',
+            'headstaff','vodjalidera','vodjastaffa','manager'
+        },
+
+        manager = {
+            'user','probniadmin','admin','roleplayadmin','eventadmin'
+        }
     }
 }
 
 -- Helper function to check if a group is an admin
 Config.IsAdminGroup = function(group)
-    return group == 'admin'
+    return group ~= 'user'
 end
 
 -- =================================
@@ -56,8 +100,18 @@ Config.AdminTags = {
 
     -- Colors for admin group
     Colors = {
-        admin = { r = 5, g = 228, b = 64, a = 1.0 }
-    },
+    developer     = { r = 5, g = 228, b = 64, a = 1.0 },
+    jaankeza      = { r = 255, g = 0, b = 0, a = 1.0 },
+    osnivac       = { r = 255, g = 140, b = 0, a = 1.0 },
+    manager       = { r = 0, g = 140, b = 255, a = 1.0 },
+    vodjastaffa   = { r = 160, g = 32, b = 240, a = 1.0 },
+    vodjalidera   = { r = 138, g = 43, b = 226, a = 1.0 },
+    headstaff     = { r = 255, g = 215, b = 0, a = 1.0 },
+    eventadmin    = { r = 0, g = 255, b = 255, a = 1.0 },
+    roleplayadmin = { r = 50, g = 205, b = 50, a = 1.0 },
+    admin         = { r = 255, g = 255, b = 255, a = 1.0 },
+    probniadmin   = { r = 180, g = 180, b = 180, a = 1.0 }
+    }
 
     DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
 }
@@ -80,21 +134,81 @@ Config.PermissionLabels = {
 -- =================================
 -- PERMISSIONS CONFIGURATION
 -- =================================
+noclip = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+},
 
-Config.Permissions = {
-    noclip           = { 'admin' },
-    invisible        = { 'admin' },
-    heal             = { 'admin' },
-    revive           = { 'admin' },
-    setJob           = { 'admin' },
-    setGroup         = { 'admin' },
-    giveItem         = { 'admin' },
-    giveVehicle      = { 'admin' },
-    fixVehicle       = { 'admin' },
-    markeri          = { 'admin' },
-    gotoplayer       = { 'admin' },
-    bringplayer      = { 'admin' },
-    teleportwaypoint = { 'admin' }
+invisible = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin'
+},
+
+heal = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin'
+},
+
+revive = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+},
+
+setJob = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
+    'headstaff'
+},
+
+setGroup = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa'
+},
+
+giveItem = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff'
+},
+
+giveVehicle = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+},
+
+fixVehicle = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+},
+
+markeri = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+},
+
+gotoplayer = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+},
+
+bringplayer = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+},
+
+teleportwaypoint = {
+    'developer', 'jaankeza',
+    'osnivac', 'manager', 'vodjastaffa',
+    'headstaff', 'eventadmin', 'roleplayadmin', 'admin'
 }
 
 -- =================================
@@ -205,3 +319,4 @@ Config.AdminLogs = {
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
+
