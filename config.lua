@@ -16,52 +16,30 @@ Config.Groups = {
     -- Order of groups (lowest to highest)
     order = {
         'user',
-        'helper',
-        'admin',
-        'spadmin',
-        'headadmin',
-        'direktor',
-        'developer',
-        'owner'
+        'admin'
     },
 
     -- Display labels for each group
     labels = {
-        user       = 'User',
-        helper     = 'Helper',
-        admin      = 'Admin',
-        spadmin    = 'Super Admin',
-        headadmin  = 'Head Admin',
-        direktor   = 'Direktor',
-        developer  = 'Developer',
-        owner      = 'Owner'
+        user  = 'User',
+        admin = 'Admin'
     },
 
     -- Numerical index for comparison (higher = more permissions)
     index = {
-        user       = 1,
-        helper     = 2,
-        admin      = 3,
-        spadmin    = 4,
-        headadmin  = 5,
-        direktor   = 6,
-        developer  = 7,
-        owner      = 8
+        user  = 1,
+        admin = 2
     },
 
     -- Which groups can set which other groups
     permissions = {
-        spadmin   = { 'user', 'helper', 'admin' },
-        headadmin = { 'user', 'helper', 'admin', 'spadmin' },
-        direktor  = { 'user', 'helper', 'admin', 'spadmin', 'headadmin' },
-        developer = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor' },
-        owner     = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'developer' }
+        admin = { 'user', 'admin' }
     }
 }
 
 -- Helper function to check if a group is an admin
 Config.IsAdminGroup = function(group)
-    return Config.Groups.index[group] and Config.Groups.index[group] > 1
+    return group == 'admin'
 end
 
 -- =================================
@@ -76,15 +54,9 @@ Config.AdminTags = {
     NearCheckWait = 500,
     TagByPermission = false,
 
-    -- Colors for each admin group
+    -- Colors for admin group
     Colors = {
-        helper      = { r = 5,   g = 228, b = 64,  a = 1.0 },
-        admin       = { r = 5,   g = 228, b = 64,  a = 1.0 },
-        headadmin   = { r = 5,   g = 146, b = 228, a = 6.0 },
-        spadmin     = { r = 228, g = 109, b = 5,   a = 6.0 },
-        direktor    = { r = 5,   g = 146, b = 228, a = 6.0 },
-        developer   = { r = 238, g = 22,  b = 22,  a = 6.0 },
-        owner       = { r = 238, g = 22,  b = 22,  a = 6.0 }
+        admin = { r = 5, g = 228, b = 64, a = 1.0 }
     },
 
     DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
@@ -101,11 +73,8 @@ Config.TagByPermission = Config.AdminTags.TagByPermission
 Config.GroupLabels = Config.Groups.labels
 
 Config.PermissionLabels = {
-    [1] = "HELPER",
-    [2] = "~g~MODERATOR",
-    [3] = "~b~ADMINISTRATOR",
-    [4] = "~r~GOD",
-    [5] = "~r~GOD",
+    [1] = "USER",
+    [2] = "~g~ADMIN"
 }
 
 -- =================================
@@ -113,19 +82,19 @@ Config.PermissionLabels = {
 -- =================================
 
 Config.Permissions = {
-    noclip           = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    invisible        = { 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    heal             = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    revive           = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    setJob           = { 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    setGroup         = { 'headadmin', 'direktor', 'owner', 'developer' },
-    giveItem         = { 'headadmin', 'direktor', 'owner', 'developer' },
-    giveVehicle      = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    fixVehicle       = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    markeri          = { 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    gotoplayer       = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    bringplayer      = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' },
-    teleportwaypoint = { 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'owner', 'developer' }
+    noclip           = { 'admin' },
+    invisible        = { 'admin' },
+    heal             = { 'admin' },
+    revive           = { 'admin' },
+    setJob           = { 'admin' },
+    setGroup         = { 'admin' },
+    giveItem         = { 'admin' },
+    giveVehicle      = { 'admin' },
+    fixVehicle       = { 'admin' },
+    markeri          = { 'admin' },
+    gotoplayer       = { 'admin' },
+    bringplayer      = { 'admin' },
+    teleportwaypoint = { 'admin' }
 }
 
 -- =================================
@@ -182,17 +151,15 @@ Config.OpenMenuLabel = 'Otvori Admin Menu'
 -- =================================
 
 Config.Reports = {
-    -- Report locking settings
     Lock = {
-        Enable              = true,  -- Lock reports when taken
-        OnlyTakerCanAction  = true,  -- Only the admin who took it can act
-        OnlyTakerCanDelete  = true   -- Only the admin who took it can delete
+        Enable             = true,
+        OnlyTakerCanAction = true,
+        OnlyTakerCanDelete = true
     },
 
-    -- Report command configuration
     Command = {
         Name  = 'report',
-        Name2 = 'communityservice', -- Community service command (for "Daj markere")
+        Name2 = 'communityservice'
     }
 }
 
