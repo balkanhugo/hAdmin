@@ -264,4 +264,60 @@ Locales['en'] = {
     ['metadata_current_group'] = 'Current group',
     ['metadata_warning'] = 'Warning',
     ['metadata_status'] = 'Status',
+
+    -- =================================
+    -- COMMUNITY SERVICE TRANSLATIONS
+    -- =================================
+    
+    -- Main Menu
+    ['clean_trash'] = 'Clean Trash',
+    ['cleaning_trash'] = 'Cleaning Trash',
+    ['remairing_actions'] = 'Remaining actions: %d',
+    ['comm_service_menu'] = 'Community Service Menu',
+    ['send_player'] = 'Send Player to Service',
+    ['comm_service_count'] = 'Assign community service to a player',
+    
+    -- Input Fields
+    ['player_id'] = 'Player ID',
+    ['player_id_desc'] = 'Enter player server ID',
+    ['actions'] = 'Actions',
+    ['actions_desc'] = 'Number of actions to complete',
+    ['reason'] = 'Reason',
+    ['reason_desc'] = 'Reason for community service',
+    
+    -- Active Players View
+    ['active_player_wiew'] = 'View Active Players',
+    ['active_player_desc'] = 'See list of players in community service',
+    ['remaining_resaon'] = 'Remaining: %d/%d | Reason: %s',
+    ['actions_for'] = 'Actions for %s',
+    ['active_players'] = 'Active Players',
+    
+    -- Player Actions
+    ['remove_service'] = 'Remove from Service',
+    ['remove_service_desc'] = 'Remove player from community service',
+    ['edit_actions'] = 'Edit Actions',
+    ['edit_actions_desc'] = 'Add or remove actions for this player',
+    
+    -- Add/Remove Actions
+    ['add_actions'] = 'Add Actions',
+    ['add_actions_desc'] = 'Add additional actions',
+    ['remove_actions'] = 'Remove Actions',
+    ['remove_actions_desc'] = 'Remove Actions from player',
+    ['number_actions'] = 'Number of Actions',
+    ['number_add_description'] = 'Enter number of actions to add',
+    ['number_remove_description'] = 'Enter number of actions to remove',
+    
+    -- Notifications
+    ['finished'] = 'You finished your community service',
+    ['no_perm'] = 'You are not authorized to do this',
+    ['need_resaon'] = 'You must provide a reason',
+    ['no_com_service'] = 'Player is not in community service',
+    ['added_markers_to'] = 'Added %d markers to %s',
+    ['removed_markers_from'] = 'Removed %d markers from %s',
+    
+    -- Nearby Players
+    ['no_nearby_players'] = 'No nearby players',
+    ['send_to_service'] = 'Send to community service',
+    ['select_player'] = 'Select Player',
+    ['select_nearby_player'] = 'Select closest player',
 }
