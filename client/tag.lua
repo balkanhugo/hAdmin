@@ -22,7 +22,7 @@ end)
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(Config.NearCheckWait)
+        Citizen.Wait(Config.AdminTags.NearCheckWait)
         local ped = PlayerPedId()
         local pedCoords = GetEntityCoords(ped)
 
@@ -119,7 +119,7 @@ Citizen.CreateThread(function()
                 local adminPed = GetPlayerPed(playerServerID)
                 local adminCoords = GetEntityCoords(adminPed)
                 local bojaTag = getAdminTagColor(v.group)
-                local z = adminCoords.z + Config.ZOffset
+                local z = adminCoords.z + Config.AdminTags.ZOffset
 
                 local label = Config.TagByPermission and Config.PermissionLabels[v.permission] or
                     ' ~w~[ ' .. Config.GroupLabels[v.group] .. ' ~w~] ' .. GetPlayerName(playerServerID)
