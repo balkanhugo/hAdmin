@@ -1,4 +1,9 @@
-Config = {}
+Config = Config or {}
+
+-- =================================
+-- LOCALIZATION SETTINGS
+-- =================================
+Config.Locale = 'hr' -- Available: 'en', 'hr'
 
 -- =================================
 -- ADMIN GROUP CONFIGURATION
@@ -51,13 +56,6 @@ Config.Groups = {
         direktor  = { 'user', 'helper', 'admin', 'spadmin', 'headadmin' },
         developer = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor' },
         owner     = { 'user', 'helper', 'admin', 'spadmin', 'headadmin', 'direktor', 'developer' }
-    },
-
-    -- Messages for group management
-    messages = {
-        selfSet      = '❌ Ne mozete menjati sebi',
-        higherGroup  = '❌ Ne mozete setovati vecu grupu',
-        sameGroup    = '❌ Ne mozete setovati istu grupu kao vase'
     }
 }
 
@@ -147,14 +145,14 @@ Config.Noclip = {
     },
 
     speeds = {
-        { label = "Veoma Sporo", speed = 0 },
-        { label = "Sporo", speed = 0.5 },
-        { label = "Normalno", speed = 2 },
-        { label = "Brzo", speed = 4 },
-        { label = "Veoma Brzo", speed = 6 },
-        { label = "Jos Brze", speed = 10 },
-        { label = "Jos Brze v2", speed = 20 },
-        { label = "zummmm", speed = 25 }
+        { label_key = "speed_very_slow", speed = 0 },
+        { label_key = "speed_slow", speed = 0.5 },
+        { label_key = "speed_normal", speed = 2 },
+        { label_key = "speed_fast", speed = 4 },
+        { label_key = "speed_very_fast", speed = 6 },
+        { label_key = "speed_faster", speed = 10 },
+        { label_key = "speed_faster_v2", speed = 20 },
+        { label_key = "speed_zoom", speed = 25 }
     },
 
     offsets = {
@@ -184,28 +182,6 @@ Config.OpenMenuLabel = 'Otvori Admin Menu'
 -- =================================
 
 Config.Reports = {
-    -- Status display text
-    StatusText = {
-        active    = '🟢 Aktivno',
-        taken     = '🟡 U obradi',
-        completed = '✅ Zavrseno',
-        deleted   = '❌ Obrisano'
-    },
-
-    StatusActionText = {
-        active = '🟢 Aktivan',
-        taken  = '🟡 U obradi'
-    },
-
-    -- Report categories
-    Categories = {
-        player   = 'Prijava igraca',
-        bug      = 'Prijava baga',
-        cheater  = 'Cheating',
-        cheating = 'Cheating',
-        admin    = 'Prijava admina'
-    },
-
     -- Report locking settings
     Lock = {
         Enable              = true,  -- Lock reports when taken
@@ -213,53 +189,10 @@ Config.Reports = {
         OnlyTakerCanDelete  = true   -- Only the admin who took it can delete
     },
 
-    -- UI Text
-    Text = {
-        Free        = 'Slobodno',
-        TakenBy     = 'Preuzeo: ',
-        Take        = 'Preuzmi Report',
-        Release     = 'Oslobodi Report',
-        TakeDesc    = 'Preuzmi report da ga radis'
-    },
-
     -- Report command configuration
     Command = {
         Name  = 'report',
         Name2 = 'communityservice', -- Community service command (for "Daj markere")
-
-        Dialog = {
-            Title      = 'Report',
-            SubmitText = 'Posalji',
-        },
-
-        Fields = {
-            Title = {
-                label       = 'Naslov',
-                placeholder = 'Kratak naslov',
-                required    = true
-            },
-            Category = {
-                label    = 'Tip',
-                required = true
-            },
-            Details = {
-                label       = 'Detalji',
-                placeholder = 'Objasni problem',
-                required    = true
-            }
-        },
-
-        Categories = {
-            { label = 'Cheating',        value = 'cheater' },
-            { label = 'Bug',             value = 'bug' },
-            { label = 'Prijava igraca',  value = 'player' },
-            { label = 'Prijava staffa',  value = 'admin' }
-        },
-
-        Notify = {
-            Success = 'Tvoj report je poslat adminima!',
-            Cancel  = 'Report otkazan'
-        }
     }
 }
 
