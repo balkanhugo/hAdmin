@@ -100,17 +100,17 @@ Config.AdminTags = {
 
     -- Colors for admin group
     Colors = {
-    developer     = { r = 5, g = 228, b = 64, a = 1.0 },
-    jaankeza      = { r = 0, g = 0, b = 255, a = 1.0 },
-    osnivac       = { r = 255, g = 140, b = 0, a = 1.0 },
-    manager       = { r = 0, g = 140, b = 255, a = 1.0 },
-    vodjastaffa   = { r = 160, g = 32, b = 240, a = 1.0 },
-    vodjalidera   = { r = 138, g = 43, b = 226, a = 1.0 },
-    headstaff     = { r = 255, g = 215, b = 0, a = 1.0 },
-    eventadmin    = { r = 0, g = 255, b = 255, a = 1.0 },
-    roleplayadmin = { r = 50, g = 205, b = 50, a = 1.0 },
-    admin         = { r = 255, g = 255, b = 255, a = 1.0 },
-    probniadmin   = { r = 180, g = 180, b = 180, a = 1.0 }
+        developer     = { r = 5, g = 228, b = 64, a = 1.0 },
+        jaankeza      = { r = 0, g = 0, b = 255, a = 1.0 },
+        osnivac       = { r = 255, g = 140, b = 0, a = 1.0 },
+        manager       = { r = 0, g = 140, b = 255, a = 1.0 },
+        vodjastaffa   = { r = 160, g = 32, b = 240, a = 1.0 },
+        vodjalidera   = { r = 138, g = 43, b = 226, a = 1.0 },
+        headstaff     = { r = 255, g = 215, b = 0, a = 1.0 },
+        eventadmin    = { r = 0, g = 255, b = 255, a = 1.0 },
+        roleplayadmin = { r = 50, g = 205, b = 50, a = 1.0 },
+        admin         = { r = 255, g = 255, b = 255, a = 1.0 },
+        probniadmin   = { r = 180, g = 180, b = 180, a = 1.0 }
     },
 
     DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
@@ -290,6 +290,106 @@ Config.Reports = {
 }
 
 -- =================================
+-- COMMUNITY SERVICE CONFIGURATION
+-- =================================
+
+Config.CommunityService = {
+    -- Enable/Disable community service system
+    Enabled = true,
+
+    -- Groups that can access community service commands
+    AuthorizedGroups = {
+        ["osnivac"] = true,
+        ["developer"] = true,
+        ["jaankeza"] = true,
+        ["manager"] = true,
+        ["vodjastaffa"] = true,
+        ["headstaff"] = true,
+    },
+
+    -- Jobs that can use community service (via ox_target)
+    JobRolesAccess = {
+        ["police"] = true,
+        ["sheriff"] = true,
+    },
+
+    -- Command to open community service menu
+    Command = 'communityservice',
+
+    -- Location where players will clean trash
+    ServiceLocation = vector3(3054.2637, -4694.6846, 14.2614),
+
+    -- Coordinates where to teleport player when finished
+    EndServiceLocation = vector3(427.2343, -979.8491, 30.7100),
+
+    -- Maximum distance player can move from service location
+    MaxDistance = 30.0,
+
+    -- Maximum distance to target nearby players
+    MaxTargetDistance = 10.0,
+
+    -- How many props will spawn at once
+    MaxProps = 5,
+
+    -- Prop models for cleaning
+    Props = {
+        'prop_rub_binbag_sd_01',
+        'prop_rub_binbag_01',
+        'prop_cs_rub_binbag_01',
+    },
+
+    -- Time between automatic healing (in minutes)
+    HealInterval = 5,
+
+    -- Progress bar settings
+    ProgressBar = {
+        Duration = 5000, -- milliseconds
+        Label = 'cleaning_trash',
+        Position = 'bottom',
+        Animation = {
+            Dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+            Clip = 'machinic_loop_mechandplayer'
+        }
+    },
+
+    -- Discord webhook for community service logs
+    DiscordWebhook = {
+        Enabled = true,
+        URL = 'https://discord.com/api/webhooks/1312014498932195348/Btk3MhuUADu-FwAp8_YllWPm65QRsX6tBgmPlQZXgm2N1XNieISDUk171HELUg782ePl',
+        Colors = {
+            Send = 16711680,    -- Red
+            Complete = 65280,   -- Green
+            Add = 16776960,     -- Yellow
+            Remove = 16753920   -- Orange
+        }
+    },
+
+    -- Remove items/weapons from player when sent to community service
+    RemoveInventory = true,
+    RemoveWeapons = true,
+    RemoveMoney = true,
+
+    -- Disable actions while in community service
+    DisableCombat = true,
+    DisableVehicles = true,
+    DisableJobActions = true,
+}
+
+-- Legacy support for community service (kept for compatibility)
+Config.AuthorizedGroups = Config.CommunityService.AuthorizedGroups
+Config.Commands = {
+    communityservice = Config.CommunityService.Command,
+}
+Config.JobRolesAccess = Config.CommunityService.JobRolesAccess
+Config.ServiceLocation = Config.CommunityService.ServiceLocation
+Config.EndServiceLocation = Config.CommunityService.EndServiceLocation
+Config.MaxDistance = Config.CommunityService.MaxDistance
+Config.MaxTargetDistance = Config.CommunityService.MaxTargetDistance
+Config.MaxProps = Config.CommunityService.MaxProps
+Config.Props = Config.CommunityService.Props
+Config.HealInterval = Config.CommunityService.HealInterval
+
+-- =================================
 -- DISCORD LOGGING CONFIGURATION
 -- =================================
 
@@ -331,5 +431,3 @@ Config.AdminLogs = {
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
-
-
