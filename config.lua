@@ -144,81 +144,83 @@ Config.PermissionLabels = {
 -- =================================
 -- PERMISSIONS CONFIGURATION
 -- =================================
-noclip = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
-},
+Config.Permissions = {
+    noclip = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+    },
 
-invisible = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin'
-},
+    invisible = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin'
+    },
 
-heal = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin'
-},
+    heal = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin'
+    },
 
-revive = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
-},
+    revive = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+    },
 
-setJob = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
-    'headstaff'
-},
+    setJob = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
+        'headstaff'
+    },
 
-setGroup = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa'
-},
+    setGroup = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa'
+    },
 
-giveItem = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff'
-},
+    giveItem = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff'
+    },
 
-giveVehicle = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
-},
+    giveVehicle = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+    },
 
-fixVehicle = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
-},
+    fixVehicle = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+    },
 
-markeri = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
-},
+    markeri = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+    },
 
-gotoplayer = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
-},
+    gotoplayer = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+    },
 
-bringplayer = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
-},
+    bringplayer = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+    },
 
-teleportwaypoint = {
-    'developer', 'jaankeza',
-    'osnivac', 'manager', 'vodjastaffa',
-    'headstaff', 'eventadmin', 'roleplayadmin', 'admin'
+    teleportwaypoint = {
+        'developer', 'jaankeza',
+        'osnivac', 'manager', 'vodjastaffa',
+        'headstaff', 'eventadmin', 'roleplayadmin', 'admin'
+    }
 }
 
 -- =================================
