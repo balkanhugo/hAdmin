@@ -33,7 +33,7 @@ Citizen.CreateThread(function()
                 local adminCoords = GetEntityCoords(adminPed)
 
                 local distance = #(adminCoords - pedCoords)
-                if distance < (Config.SeeDistance) then
+                if distance < (Config.AdminTags.SeeDistance) then
                     visibleAdmins[v.source] = v
                 else
                     visibleAdmins[v.source] = nil
