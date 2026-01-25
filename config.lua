@@ -101,7 +101,7 @@ Config.AdminTags = {
     -- Colors for admin group
     Colors = {
     developer     = { r = 5, g = 228, b = 64, a = 1.0 },
-    jaankeza      = { r = 255, g = 0, b = 0, a = 1.0 },
+    jaankeza      = { r = 0, g = 0, b = 255, a = 1.0 },
     osnivac       = { r = 255, g = 140, b = 0, a = 1.0 },
     manager       = { r = 0, g = 140, b = 255, a = 1.0 },
     vodjastaffa   = { r = 160, g = 32, b = 240, a = 1.0 },
@@ -111,7 +111,7 @@ Config.AdminTags = {
     roleplayadmin = { r = 50, g = 205, b = 50, a = 1.0 },
     admin         = { r = 255, g = 255, b = 255, a = 1.0 },
     probniadmin   = { r = 180, g = 180, b = 180, a = 1.0 }
-    }
+    },
 
     DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
 }
@@ -127,8 +127,18 @@ Config.TagByPermission = Config.AdminTags.TagByPermission
 Config.GroupLabels = Config.Groups.labels
 
 Config.PermissionLabels = {
-    [1] = "USER",
-    [2] = "~g~ADMIN"
+    [1]  = "USER",
+    [2]  = "PROBNI ADMIN",
+    [3]  = "ADMIN",
+    [4]  = "RP ADMIN",
+    [5]  = "EVENT ADMIN",
+    [6]  = "HEAD STAFF",
+    [7]  = "VODJA LIDERA",
+    [8]  = "VODJA STAFFA",
+    [9]  = "MANAGER",
+    [10] = "OSNIVAC",
+    [11] = "JAANKEZA",
+    [12] = "DEVELOPER"
 }
 
 -- =================================
@@ -272,8 +282,8 @@ Config.Reports = {
     },
 
     Command = {
-        Name  = 'report',
-        Name2 = 'communityservice'
+        Name  = 'pomoc',
+        Name2 = 'dajmarkere'
     }
 }
 
@@ -319,4 +329,5 @@ Config.AdminLogs = {
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
+
 
