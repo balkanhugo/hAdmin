@@ -201,15 +201,15 @@ AddEventHandler('tj_communityservice:sendToService', function(targetId, actions,
     local src = source
     if not isAuthorized(src) then
         lib.notify(src, {
-            title = 'Error',
-            description = locale('no_perm'),
+            title = _('error'),
+            description = _('no_perm'),
             type = 'error'
         })
         return
     end
 
     if not reason or reason == '' then
-        TriggerClientEvent('esx:showNotification', src, locale('need_resaon'))
+        TriggerClientEvent('esx:showNotification', src, _('need_resaon'))
         return
     end
 
@@ -287,8 +287,8 @@ AddEventHandler('tj_communityservice:addMarkers', function(targetId, markerCount
 
     if not activePlayers[targetId] then
         lib.notify(source, {
-            title = 'Error',
-            description = locale('no_com_service'),
+            title = _('error'),
+            description = _('no_com_service'),
             type = 'error'
         })
         return
@@ -304,8 +304,8 @@ AddEventHandler('tj_communityservice:addMarkers', function(targetId, markerCount
     SendToDiscord('communityservice', 'Community Service Add', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```\n**Actions**: ```'.. markerCount .. '```', 16711680, false)    
 
     lib.notify(source, {
-        title = 'Success',
-        description = string.format(locale('added_markers_to'), markerCount, xTarget.getName()),
+        title = _('success'),
+        description = string.format(_('added_markers_to'), markerCount, xTarget.getName()),
         type = 'success'
     })
 end)
@@ -315,8 +315,8 @@ AddEventHandler('tj_communityservice:removeMarkers', function(targetId, markerCo
     local source = source
     if not isAuthorized(source) then
         lib.notify(source, {
-            title = 'Error',
-            description = locale('no_perm'),
+            title = _('error'),
+            description = _('no_perm'),
             type = 'error'
         })
         return
@@ -341,8 +341,8 @@ AddEventHandler('tj_communityservice:removeMarkers', function(targetId, markerCo
         restorePlayerItems(targetId)
         activePlayers[targetId] = nil
         lib.notify(source, {
-            title = 'Success',
-            description = string.format(locale('removed_markers_from'), removedMarkers, xTarget.getName()),
+            title = _('success'),
+            description = string.format(_('removed_markers_from'), removedMarkers, xTarget.getName()),
             type = 'success'
         })
         TriggerClientEvent('tj_communityservice:finishService', targetId)
