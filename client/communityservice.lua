@@ -1,5 +1,5 @@
 ESX = exports['es_extended']:getSharedObject()
-lib.locale()
+
 local isInService = false
 local currentActions = 0
 local activeProps = {}
@@ -36,12 +36,12 @@ local function SpawnProps()
         exports.ox_target:addLocalEntity(prop, {
             {
                 name = 'clean_trash',
-                label = locale('clean_trash'),
+                label = _('clean_trash'),
                 icon = 'fas fa-broom',
                 onSelect = function()
                     lib.progressCircle({
                         duration = 5000,
-                        label = locale('cleaning_trash'),
+                        label = _('cleaning_trash'),
                         position = 'bottom',
                         useWhileDead = false,
                         canCancel = false,
@@ -76,7 +76,7 @@ end
 local function ShowRemainingActions()
     if not isInService then return end
     
-    local text = string.format(locale('remairing_actions'), currentActions)
+    local text = string.format(_('remairing_actions'), currentActions)
     lib.showTextUI(text, {
         position = 'right-center',
         icon = 'broom',
@@ -131,7 +131,7 @@ AddEventHandler('tj_communityservice:finishService', function()
         DeleteEntity(prop)
     end
     
-    ESX.ShowNotification(locale('finished'))
+    ESX.ShowNotification(_('finished'))
     Wait(500)
     activeProps = {}
     SetEntityCoords(PlayerPedId(), Config.EndServiceLocation.x, Config.EndServiceLocation.y, Config.EndServiceLocation.z)
@@ -143,27 +143,27 @@ AddEventHandler('tj_communityservice:heal', function()
 end)
 
 RegisterCommand(Config.Commands.communityservice, function()
-ESX.TriggerServerCallback("community_service:checkAdmin", function(playerRank)
+    ESX.TriggerServerCallback("community_service:checkAdmin", function(playerRank)
         if Config.AuthorizedGroups[playerRank] then
-        lib.showContext('community_service_menu')
-    else
-        return ESX.ShowNotification(locale('no_perm'))
-    end 
-end)
+            lib.showContext('community_service_menu')
+        else
+            return ESX.ShowNotification(_('no_perm'))
+        end 
+    end)
 end)
 
 lib.registerContext({
     id = 'community_service_menu',
-    title = locale('send_player'),
+    title = _('comm_service_menu'),
     options = {
         {
-            title = locale('send_player'),
-            description = locale('comm_service_count'),
+            title = _('send_player'),
+            description = _('comm_service_count'),
             onSelect = function()
-                local input = lib.inputDialog(locale('send_player'), {
-                    {type = 'number', label = locale('player_id'), description = locale('player_id_desc'), required = true},
-                    {type = 'number', label = locale('actions'), description = locale('actions_desc'), required = true, min = 1},
-                    {type = 'input', label = locale('reason'), description = locale('reason_desc'), required = true}
+                local input = lib.inputDialog(_('send_player'), {
+                    {type = 'number', label = _('player_id'), description = _('player_id_desc'), required = true},
+                    {type = 'number', label = _('actions'), description = _('actions_desc'), required = true, min = 1},
+                    {type = 'input', label = _('reason'), description = _('reason_desc'), required = true}
                 })
                 
                 if input then
@@ -172,8 +172,8 @@ lib.registerContext({
             end
         },
         {
-            title = locale('active_player_wiew'),
-            description = locale('active_player_desc'),
+            title = _('active_player_wiew'),
+            description = _('active_player_desc'),
             onSelect = function()
                 local players = lib.callback.await('tj_communityservice:getActivePlayers')
                 local options = {}
@@ -181,36 +181,36 @@ lib.registerContext({
                 for _, player in ipairs(players) do
                     table.insert(options, {
                         title = player.name,
-                        description = string.format(locale('remaining_resaon'), player.remaining, player.total, player.reason),
+                        description = string.format(_('remaining_resaon'), player.remaining, player.total, player.reason),
                         onSelect = function()
                             lib.registerContext({
                                 id = 'player_actions_menu',
-                                title = string.format(locale('actions_for'), player.name),
+                                title = string.format(_('actions_for'), player.name),
                                 menu = 'active_players_menu',
                                 options = {
                                     {
-                                        title = locale('remove_service'),
-                                        description = locale('remove_service_desc'),
+                                        title = _('remove_service'),
+                                        description = _('remove_service_desc'),
                                         onSelect = function()
                                             TriggerServerEvent('tj_communityservice:removeFromService', player.id)
                                             lib.showContext('community_service_menu')
                                         end
                                     },
                                     {
-                                        title = locale('edit_actions'),
-                                        description = locale('edit_actions_desc'),
+                                        title = _('edit_actions'),
+                                        description = _('edit_actions_desc'),
                                         onSelect = function()
                                             lib.registerContext({
                                                 id = 'edit_actions_menu',
-                                                title = locale('edit_actions'),
+                                                title = _('edit_actions'),
                                                 menu = 'player_actions_menu',
                                                 options = {
                                                     {
-                                                        title = locale('add_actions'),
-                                                        description = locale('add_actions_desc'),
+                                                        title = _('add_actions'),
+                                                        description = _('add_actions_desc'),
                                                         onSelect = function()
-                                                            local input = lib.inputDialog(locale('add_actions'), {
-                                                                {type = 'number', label = locale('number_actions'), description = locale('number_add_description'), required = true, min = 1}
+                                                            local input = lib.inputDialog(_('add_actions'), {
+                                                                {type = 'number', label = _('number_actions'), description = _('number_add_description'), required = true, min = 1}
                                                             })
                                                             
                                                             if input then
@@ -220,11 +220,11 @@ lib.registerContext({
                                                         end
                                                     },
                                                     {
-                                                        title = locale('remove_actions'),
-                                                        description = locale('remove_actions_desc'),
+                                                        title = _('remove_actions'),
+                                                        description = _('remove_actions_desc'),
                                                         onSelect = function()
-                                                            local input = lib.inputDialog(locale('remove_actions'), {
-                                                                {type = 'number', label = locale('number_actions'), description = locale('number_remove_description'), required = true, min = 1}
+                                                            local input = lib.inputDialog(_('remove_actions'), {
+                                                                {type = 'number', label = _('number_actions'), description = _('number_remove_description'), required = true, min = 1}
                                                             })
                                                             
                                                             if input then
@@ -247,7 +247,7 @@ lib.registerContext({
                 
                 lib.registerContext({
                     id = 'active_players_menu',
-                    title = locale('active_players'),
+                    title = _('active_players'),
                     menu = 'community_service_menu',
                     options = options
                 })
@@ -296,25 +296,25 @@ local function OpenPlayerSelectionDialog()
         })
     end
 
-    local input = lib.inputDialog(locale('send_player'), {
+    local input = lib.inputDialog(_('send_player'), {
         {
             type = 'select',
-            label = locale('player'),
-            description = locale('select_player'),
+            label = _('player'),
+            description = _('select_player'),
             options = playerOptions,
             required = true
         },
         {
             type = 'number',
-            label = locale('actions'),
-            description = locale('actions_desc'),
+            label = _('actions'),
+            description = _('actions_desc'),
             required = true,
             min = 1
         },
         {
             type = 'input',
-            label = locale('reason'),
-            description = locale('reason_desc'),
+            label = _('reason'),
+            description = _('reason_desc'),
             required = true
         }
     })
@@ -332,7 +332,7 @@ local function OpenCommunityServiceMenu()
         if hasAccess then
             OpenPlayerSelectionDialog()
         else
-            return ESX.ShowNotification(locale('no_perm'))
+            return ESX.ShowNotification(_('no_perm'))
         end 
     end)
 end
@@ -340,7 +340,7 @@ end
 exports.ox_target:addGlobalPlayer({
     {
         name = 'community_service_action',
-        label = locale('send_to_service'),
+        label = _('send_to_service'),
         icon = 'fas fa-broom',
         canInteract = function(entity)
             return Config.JobRolesAccess[ESX.PlayerData.job.name] and not IsPedInAnyVehicle(PlayerPedId(), false)
@@ -348,7 +348,7 @@ exports.ox_target:addGlobalPlayer({
         onSelect = function(data)
             local nearbyPlayers = GetNearbyPlayers()
             if #nearbyPlayers == 0 then
-                ESX.ShowNotification(locale('no_nearby_players'))
+                ESX.ShowNotification(_('no_nearby_players'))
                 return
             end
             OpenPlayerSelectionDialog()
