@@ -274,8 +274,8 @@ Config.Reports = {
     },
 
     Command = {
-        Name  = 'pomoc',
-        Name2 = 'dajmarkere'
+        Name  = 'pomoc', -- command to open report menu
+        Name2 = Config.CommunityService.Command
     }
 }
 
@@ -421,4 +421,5 @@ Config.AdminLogs = {
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
+
 
