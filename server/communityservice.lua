@@ -1,19 +1,13 @@
 local activePlayers = {}
 local actionCooldown = {}
 
-local Webhooks = {
-    ['communityservice'] = 'https://discord.com/api/webhooks/1312014498932195348/Btk3MhuUADu-FwAp8_YllWPm65QRsX6tBgmPlQZXgm2N1XNieISDUk171HELUg782ePl',
-}
+local function SendToDiscord(title, message, color)
+    local cfg = Config.AdminLogs.communityservice
+    if not cfg or not cfg.enabled or not cfg.webhook or cfg.webhook == "" then return end
+    if cfg.webhook:find("YOUR_WEBHOOK_HERE") then return end
 
-
-local function SendToDiscord(webhookName, title, message, color, tagEveryone)
-    local webhook = Webhooks[webhookName]
     local datum = os.date("%d-%m-%Y")
     local vreme = os.date('*t')
-    if not webhook then
-        print('^1[DiscordLogs] Webhook ' .. webhookName .. ' nije pronađen!^7')
-        return
-    end
 
     local embed = {
         {
@@ -26,12 +20,11 @@ local function SendToDiscord(webhookName, title, message, color, tagEveryone)
         }
     }
 
-    PerformHttpRequest(webhook, function(err, text, headers)
+    PerformHttpRequest(cfg.webhook, function(err, text, headers)
         if err ~= 200 and err ~= 204 then
             print('^1[DiscordLogs] Greska prilikom slanja poruke: ' .. err .. '^7')
         end
     end, 'POST', json.encode({
-        content = tagEveryone and "@everyone" or nil,
         embeds = embed,
     }), { ['Content-Type'] = 'application/json' })
 end
@@ -52,9 +45,8 @@ local function isAuthorized(source)
 
     local playerGroup = xPlayer.getGroup()    
     local playerJob = xPlayer.job.name
-    return Config.AuthorizedGroups[playerGroup] or Config.JobRolesAccess[playerJob] == true or false
+    return Config.CommunityService.AuthorizedGroups[playerGroup] or Config.CommunityService.JobRolesAccess[playerJob] == true or false
 end
-
 
 local function checkAndRestoreCommunityService(source, identifier)
     local activeService = MySQL.single.await('SELECT * FROM community_service_active WHERE identifier = ?', {identifier})
@@ -85,11 +77,9 @@ AddEventHandler('esx:playerLoaded', function(source)
             SetTimeout(10000, function()
                 checkAndRestoreCommunityService(source, identifier)
             end)
-        else 
         end
     end
 end)
-
 
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() ~= resourceName then return end
@@ -102,8 +92,6 @@ AddEventHandler('onResourceStart', function(resourceName)
         end
     end
 end)
-
-
 
 local function storePlayerItems(playerId)
     local xPlayer = ESX.GetPlayerFromId(playerId)
@@ -188,7 +176,7 @@ AddEventHandler('tj_communityservice:completeAction', function(receivedToken)
         activePlayers[source] = nil
         TriggerClientEvent('tj_communityservice:finishService', source)
         MySQL.query('DELETE FROM community_service_active WHERE identifier = ?', {ESX.GetPlayerFromId(source).identifier})
-        SendToDiscord('communityservice', 'Community Service End', '**Igrac**: ```' .. GetPlayerName(source) .. '```', 16711680, false)
+        SendToDiscord('Community Service End', '**Igrac**: ```' .. GetPlayerName(source) .. '```', 16711680)
     else
         MySQL.query('UPDATE community_service_active SET actions_remaining = ? WHERE identifier = ?',
             {activePlayers[source].remaining, ESX.GetPlayerFromId(source).identifier})
@@ -224,7 +212,7 @@ AddEventHandler('tj_communityservice:sendToService', function(targetId, actions,
         reason = reason
     }
 
-    SendToDiscord('communityservice', 'Community Service Send', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```\n**Actions**: ```'.. actions ..  '```\n**Reason**: ```'.. reason .. '```', 16711680, false)    
+    SendToDiscord('Community Service Send', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```\n**Actions**: ```'.. actions ..  '```\n**Reason**: ```'.. reason .. '```', 16711680)    
     AddServiceRecord(xTarget.identifier, xPlayer.identifier, actions, reason)
     storePlayerItems(targetId)
     TriggerClientEvent('tj_communityservice:inService', targetId, actions)
@@ -261,14 +249,14 @@ AddEventHandler('tj_communityservice:removeFromService', function(targetId)
         restorePlayerItems(targetId)
         activePlayers[targetId] = nil
         TriggerClientEvent('tj_communityservice:finishService', targetId)
-        SendToDiscord('communityservice', 'Community Service End', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```', 16711680, false)
+        SendToDiscord('Community Service End', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```', 16711680)
         MySQL.query('DELETE FROM community_service_active WHERE identifier = ?', {xTarget.identifier})
     end
 end)
 
 CreateThread(function()
     while true do
-        Wait(Config.HealInterval * 60 * 1000)
+        Wait(Config.CommunityService.HealInterval * 60 * 1000)
         for playerId, _ in pairs(activePlayers) do
             TriggerClientEvent('tj_communityservice:heal', playerId)
         end
@@ -301,7 +289,7 @@ AddEventHandler('tj_communityservice:addMarkers', function(targetId, markerCount
         {markerCount, markerCount, xTarget.identifier})
 
     TriggerClientEvent('tj_communityservice:updateActions', targetId, activePlayers[targetId].remaining)
-    SendToDiscord('communityservice', 'Community Service Add', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```\n**Actions**: ```'.. markerCount .. '```', 16711680, false)    
+    SendToDiscord('Community Service Add', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```\n**Actions**: ```'.. markerCount .. '```', 16711680)    
 
     lib.notify(source, {
         title = _('success'),
@@ -349,10 +337,9 @@ AddEventHandler('tj_communityservice:removeMarkers', function(targetId, markerCo
         MySQL.query('DELETE FROM community_service_active WHERE identifier = ?', {xTarget.identifier})
     else
         TriggerClientEvent('tj_communityservice:updateActions', targetId, newRemainingActions)
-        SendToDiscord('communityservice', 'Community Service Remove', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```\n**Actions**: ```'.. removedMarkers .. '```', 16711680, false)
+        SendToDiscord('Community Service Remove', '**Admin**: ```' .. GetPlayerName(source) .. '```\n**Player**: ```'.. GetPlayerName(targetId) .. '```\n**Actions**: ```'.. removedMarkers .. '```', 16711680)
     end
 end)
-
 
 ESX.RegisterServerCallback("community_service:checkAdmin", function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -364,7 +351,7 @@ end)
 ESX.RegisterServerCallback('community_service:checkJobAccess', function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
     
-    if Config.JobRolesAccess[xPlayer.job.name] then
+    if Config.CommunityService.JobRolesAccess[xPlayer.job.name] then
         cb(true)
     else
         cb(false)
