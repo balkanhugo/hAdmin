@@ -3,7 +3,7 @@ ESX = exports['es_extended']:getSharedObject()
 local isInService = false
 local currentActions = 0
 local activeProps = {}
-local maxProps = Config.MaxProps
+local maxProps = Config.CommunityService.MaxProps
 
 
 local function DisableCombat()
@@ -24,9 +24,9 @@ end
 local function SpawnProps()
     while #activeProps < maxProps do
         local offset = vector3(math.random(-10, 10), math.random(-10, 10), 0)
-        local coords = Config.ServiceLocation + offset
+        local coords = Config.CommunityService.ServiceLocation + offset
         
-        local model = Config.Props[math.random(#Config.Props)]
+        local model = Config.CommunityService.Props[math.random(#Config.CommunityService.Props)]
         lib.requestModel(model)
         
         local prop = CreateObject(model, coords.x, coords.y, coords.z, false, false, false)
@@ -92,7 +92,7 @@ AddEventHandler('tj_communityservice:inService', function(actions)
     isInService = true
     currentActions = actions
     
-    SetEntityCoords(PlayerPedId(), Config.ServiceLocation.x, Config.ServiceLocation.y, Config.ServiceLocation.z)
+    SetEntityCoords(PlayerPedId(), Config.CommunityService.ServiceLocation.x, Config.CommunityService.ServiceLocation.y, Config.CommunityService.ServiceLocation.z)
     
     SpawnProps()
     ShowRemainingActions()
@@ -103,10 +103,10 @@ AddEventHandler('tj_communityservice:inService', function(actions)
             DisableCombat()
             
             local playerCoords = GetEntityCoords(PlayerPedId())
-            local distance = #(playerCoords - Config.ServiceLocation)
+            local distance = #(playerCoords - Config.CommunityService.ServiceLocation)
             
-            if distance > Config.MaxDistance then
-                SetEntityCoords(PlayerPedId(), Config.ServiceLocation.x, Config.ServiceLocation.y, Config.ServiceLocation.z)
+            if distance > Config.CommunityService.MaxDistance then
+                SetEntityCoords(PlayerPedId(), Config.CommunityService.ServiceLocation.x, Config.CommunityService.ServiceLocation.y, Config.CommunityService.ServiceLocation.z)
             end
             
             ShowRemainingActions()
@@ -134,7 +134,7 @@ AddEventHandler('tj_communityservice:finishService', function()
     ESX.ShowNotification(_('finished'))
     Wait(500)
     activeProps = {}
-    SetEntityCoords(PlayerPedId(), Config.EndServiceLocation.x, Config.EndServiceLocation.y, Config.EndServiceLocation.z)
+    SetEntityCoords(PlayerPedId(), Config.CommunityService.EndServiceLocation.x, Config.CommunityService.EndServiceLocation.y, Config.CommunityService.EndServiceLocation.z)
 end)
 
 RegisterNetEvent('tj_communityservice:heal')
@@ -144,7 +144,7 @@ end)
 
 RegisterCommand(Config.CommunityService.Command, function()
     ESX.TriggerServerCallback("community_service:checkAdmin", function(playerRank)
-        if Config.AuthorizedGroups[playerRank] then
+        if Config.CommunityService.AuthorizedGroups[playerRank] then
             lib.showContext('community_service_menu')
         else
             return ESX.ShowNotification(_('no_perm'))
@@ -271,7 +271,7 @@ local function GetNearbyPlayers()
             local targetCoords = GetEntityCoords(targetPed)
             local distance = #(playerCoords - targetCoords)
             
-            if distance <= Config.MaxTargetDistance then
+            if distance <= Config.CommunityService.MaxTargetDistance then
                 local serverPlayerId = GetPlayerServerId(playerId)
                 local playerName = GetPlayerName(playerId)
                 table.insert(nearbyPlayers, {
@@ -343,7 +343,7 @@ exports.ox_target:addGlobalPlayer({
         label = _('send_to_service'),
         icon = 'fas fa-broom',
         canInteract = function(entity)
-            return Config.JobRolesAccess[ESX.PlayerData.job.name] and not IsPedInAnyVehicle(PlayerPedId(), false)
+            return Config.CommunityService.JobRolesAccess[ESX.PlayerData.job.name] and not IsPedInAnyVehicle(PlayerPedId(), false)
         end,
         onSelect = function(data)
             local nearbyPlayers = GetNearbyPlayers()
