@@ -142,7 +142,7 @@ AddEventHandler('tj_communityservice:heal', function()
     SetEntityHealth(PlayerPedId(), GetEntityMaxHealth(PlayerPedId()))
 end)
 
-RegisterCommand(Config.Commands.communityservice, function()
+RegisterCommand(Config.CommunityService.Command, function()
     ESX.TriggerServerCallback("community_service:checkAdmin", function(playerRank)
         if Config.AuthorizedGroups[playerRank] then
             lib.showContext('community_service_menu')
