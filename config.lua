@@ -273,10 +273,7 @@ Config.Reports = {
         OnlyTakerCanDelete = true
     },
 
-    Command = {
-        Name  = 'pomoc', -- command to open report menu
-        Name2 = Config.CommunityService.Command
-    }
+    Command = 'pomoc' -- command to open report menu
 }
 
 -- =================================
@@ -286,6 +283,9 @@ Config.Reports = {
 Config.CommunityService = {
     -- Enable/Disable community service system
     Enabled = true,
+
+    -- Command to open community service menu
+    Command = 'communityservice',
 
     -- Groups that can access community service commands
     AuthorizedGroups = {
@@ -302,9 +302,6 @@ Config.CommunityService = {
         ["police"] = true,
         ["sheriff"] = true,
     },
-
-    -- Command to open community service menu
-    Command = 'communityservice',
 
     -- Location where players will clean trash
     ServiceLocation = vector3(3054.2637, -4694.6846, 14.2614),
@@ -342,18 +339,6 @@ Config.CommunityService = {
         }
     },
 
-    -- Discord webhook for community service logs
-    DiscordWebhook = {
-        Enabled = true,
-        URL = 'https://discord.com/api/webhooks/1312014498932195348/Btk3MhuUADu-FwAp8_YllWPm65QRsX6tBgmPlQZXgm2N1XNieISDUk171HELUg782ePl',
-        Colors = {
-            Send = 16711680,    -- Red
-            Complete = 65280,   -- Green
-            Add = 16776960,     -- Yellow
-            Remove = 16753920   -- Orange
-        }
-    },
-
     -- Remove items/weapons from player when sent to community service
     RemoveInventory = true,
     RemoveWeapons = true,
@@ -364,20 +349,6 @@ Config.CommunityService = {
     DisableVehicles = true,
     DisableJobActions = true,
 }
-
--- Legacy support for community service (kept for compatibility)
-Config.AuthorizedGroups = Config.CommunityService.AuthorizedGroups
-Config.Commands = {
-    communityservice = Config.CommunityService.Command,
-}
-Config.JobRolesAccess = Config.CommunityService.JobRolesAccess
-Config.ServiceLocation = Config.CommunityService.ServiceLocation
-Config.EndServiceLocation = Config.CommunityService.EndServiceLocation
-Config.MaxDistance = Config.CommunityService.MaxDistance
-Config.MaxTargetDistance = Config.CommunityService.MaxTargetDistance
-Config.MaxProps = Config.CommunityService.MaxProps
-Config.Props = Config.CommunityService.Props
-Config.HealInterval = Config.CommunityService.HealInterval
 
 -- =================================
 -- DISCORD LOGGING CONFIGURATION
@@ -419,7 +390,13 @@ Config.AdminLogs = {
     duty = {
         enabled = true,
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
+    },
+    communityservice = {
+        enabled = true,
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
 
-
+-- =================================
+-- NOCLIP CONFIGURATION
+-- =================================
