@@ -604,7 +604,7 @@ end
 
 function staviigracanamarkere()
     lib.hideContext()
-    ExecuteCommand(Config.Reports.Command.Name2)
+    ExecuteCommand(Config.CommunityService.Command)
 end
 
 function openPlayerID()
@@ -1527,7 +1527,7 @@ function openGiveItemMenu(playerId, playerName)
     end
 end
 
-RegisterCommand(Config.Reports.Command.Name, function()
+RegisterCommand(Config.Reports.Command, function()
     local cmd = Config.Reports.Command
 
     local input = lib.inputDialog(_('new_report'), {
@@ -1571,3 +1571,4 @@ RegisterCommand(Config.Reports.Command.Name, function()
 
     TriggerServerEvent('reports:createReport', title, category, details)
 end)
+
