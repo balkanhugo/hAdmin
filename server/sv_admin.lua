@@ -189,6 +189,105 @@ AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, sp
     end
 end)
 
+RegisterServerEvent('admin:giveCarToPlayer')
+AddEventHandler('admin:giveCarToPlayer', function(targetId, vehicleModel, customPlate)
+    local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
+    local targetPlayer = ESX.GetPlayerFromId(targetId)
+    
+    if not xPlayer or not targetPlayer then
+        TriggerClientEvent('esx:showNotification', src, _('player_not_found'))
+        return
+    end
+
+    local group = xPlayer.getGroup()
+    
+    if HasPermission(group, 'givecar') then
+        -- Generate plate if not provided
+        local plate = customPlate or GeneratePlate()
+        
+        -- Make sure plate is uppercase and max 8 characters
+        plate = string.upper(plate):sub(1, 8)
+        
+        -- Insert vehicle into database
+        MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, stored, parking) VALUES (@owner, @plate, @vehicle, 1, "elgin")', {
+            ['@owner'] = targetPlayer.identifier,
+            ['@plate'] = plate,
+            ['@vehicle'] = json.encode({
+                model = GetHashKey(vehicleModel),
+                plate = plate
+            })
+        }, function(rowsChanged)
+            if rowsChanged > 0 then
+                -- Notify both players
+                TriggerClientEvent('esx:showNotification', src, _('sent_vehicle', vehicleModel, targetPlayer.getName()) .. ' (' .. plate .. ')')
+                TriggerClientEvent('esx:showNotification', targetId, _('admin_gave_vehicle', vehicleModel) .. ' (' .. plate .. ')')
+                
+                -- Log the action
+                print(('[GiveCar] %s gave %s a %s (Plate: %s)'):format(xPlayer.getName(), targetPlayer.getName(), vehicleModel, plate))
+                
+                SendAdminLog(
+                    "givecar",
+                    "ADMIN GIVE CAR (DB)",
+                    "**Admin:** "..xPlayer.getName().." (ID "..src..")\n**Target:** "..targetPlayer.getName().." (ID "..targetId..")\n**Vehicle:** "..vehicleModel.."\n**Plate:** "..plate,
+                    10181046
+                )
+            else
+                TriggerClientEvent('esx:showNotification', src, _('error'))
+            end
+        end)
+    else
+        TriggerClientEvent('esx:showNotification', src, _('no_permission'))
+    end
+end)
+
+RegisterServerEvent('admin:removeCarByPlate')
+AddEventHandler('admin:removeCarByPlate', function(plate)
+    local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
+    if not xPlayer then return end
+
+    local group = xPlayer.getGroup()
+    
+    if HasPermission(group, 'removecar') then
+        if not plate then
+            TriggerClientEvent('esx:showNotification', src, _('invalid_input'))
+            return
+        end
+        
+        plate = string.upper(plate):gsub("%s+", "")
+        
+        -- Check if plate exists
+        local result = MySQL.Sync.fetchScalar('SELECT COUNT(*) FROM owned_vehicles WHERE plate = @plate', {
+            ['@plate'] = plate
+        })
+        
+        if result > 0 then
+            MySQL.Async.execute('DELETE FROM owned_vehicles WHERE plate = @plate', {
+                ['@plate'] = plate
+            }, function(rowsChanged)
+                if rowsChanged > 0 then
+                    TriggerClientEvent('esx:showNotification', src, _('car_removed', plate))
+                    print(('[RemoveCar] %s removed vehicle with plate %s'):format(xPlayer.getName(), plate))
+                    
+                    SendAdminLog(
+                        "removecar",
+                        "ADMIN REMOVE CAR (DB)",
+                        "**Admin:** "..xPlayer.getName().." (ID "..src..")\n**Vehicle Plate:** "..plate,
+                        15158332
+                    )
+                else
+                    TriggerClientEvent('esx:showNotification', src, _('error'))
+                end
+            end)
+        else
+            TriggerClientEvent('esx:showNotification', src, _('car_not_found', plate))
+        end
+    else
+        TriggerClientEvent('esx:showNotification', src, _('no_permission'))
+    end
+end)
+
 RegisterServerEvent('admin:logBoostVehicle')
 AddEventHandler('admin:logBoostVehicle', function(vehicleName)
     local src = source
@@ -756,3 +855,26 @@ AddEventHandler('admin:sendMessageToPlayer', function(playerId, message)
         duration = 7000
     })
 end)
+
+-- Function to generate random plate
+function GeneratePlate()
+    local plate = ""
+    local charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    
+    for i = 1, 8 do
+        local rand = math.random(1, #charset)
+        plate = plate .. string.sub(charset, rand, rand)
+    end
+    
+    -- Check if plate already exists
+    local result = MySQL.Sync.fetchScalar('SELECT COUNT(*) FROM owned_vehicles WHERE plate = @plate', {
+        ['@plate'] = plate
+    })
+    
+    if result > 0 then
+        -- Plate exists, generate new one
+        return GeneratePlate()
+    end
+    
+    return plate
+end

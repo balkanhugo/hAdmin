@@ -11,12 +11,13 @@ A comprehensive admin system for FiveM ESX servers with reports, admin tags, and
 - **Player ID Display** - Toggle player IDs on/off
 - **Teleportation** - Go to player, bring player, teleport to waypoint
 - **Player Management** - Heal, revive, set job, set group, give items/vehicles
+- **Give/Remove Car (DB)** - Permanently add/remove vehicle ownership in the database
 - **Discord Logging** - All admin actions logged to Discord webhooks
 
 ## Installation
 
 ### Step 1: Database
-No database changes required - the script uses ESX's built-in functions.
+No database changes required - the script uses ESX's built-in functions and standard `owned_vehicles` table.
 
 ### Step 2: ESX Modifications
 
@@ -75,6 +76,7 @@ Config.Reports.Command.Name2 = 'communityservice'
    - Discord webhook URLs for logging
    - Command keys and controls
    - Report system settings
+   - Give/Remove Car commands (`Config.GiveCarCommand` & `Config.RemoveCarCommand`)
 
 2. Set your Discord webhooks in `Config.AdminLogs`
 
@@ -87,6 +89,8 @@ Config.Reports.Command.Name2 = 'communityservice'
 - `/openadmin` - Alternative way to open menu
 - `/id` - Toggle player IDs (must be on duty)
 - `/report` - Submit a report to admins
+- `/[Config.GiveCarCommand]` (default: `/givecar`) - Permanently give a vehicle to a player. If no arguments are provided, it opens an `ox_lib` form menu.
+- `/[Config.RemoveCarCommand]` (default: `/removecar`) - Permanently remove a vehicle from database by plate. If no arguments are provided, it opens an `ox_lib` form menu.
 
 ### Admin Menu Features
 When on duty, admins can access:
@@ -96,6 +100,7 @@ When on duty, admins can access:
 - Player management (heal, revive, etc.)
 - Job and group management
 - Vehicle and item giving
+- Give Car (DB) & Remove Car (DB)
 - Noclip and invisibility
 
 ## Configuration

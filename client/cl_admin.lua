@@ -263,6 +263,38 @@ function openAdminPanel()
                 end
             },
             {
+                title = _('give_car'),
+                description = _('give_car_desc'),
+                icon = 'key',
+                onSelect = function()
+                    if not HasPermission(Config.Permissions.givecar) then
+                        return lib.notify({
+                            title = _('admin_system'),
+                            description = _('no_permission'),
+                            type = 'error',
+                            duration = 3000
+                        })
+                    end
+                    openGiveCarPlayerList()
+                end
+            },
+            {
+                title = _('remove_car'),
+                description = _('remove_car_desc'),
+                icon = 'trash',
+                onSelect = function()
+                    if not HasPermission(Config.Permissions.removecar) then
+                        return lib.notify({
+                            title = _('admin_system'),
+                            description = _('no_permission'),
+                            type = 'error',
+                            duration = 3000
+                        })
+                    end
+                    openRemoveCarDialog()
+                end
+            },
+            {
                 title = _('revive_player'),
                 description = _('revive_player_desc'),
                 icon = 'syringe',
@@ -1433,7 +1465,7 @@ AddEventHandler('admin:doHeal', function()
     ClearPedBloodDamage(ped)
     ResetPedVisibleDamage(ped)
     ClearPedLastWeaponDamage(ped)
-    TriggerEvent('esx_basicneeds:healPlayer', source)
+    SetEntityHealth(ped, GetEntityMaxHealth(ped))
     ESX.ShowNotification(_('admin_healed_you'))
 end)
 
@@ -1661,3 +1693,193 @@ RegisterCommand(Config.Reports.Command, function()
     TriggerServerEvent('reports:createReport', title, category, details)
 end)
 
+function openGiveCarPlayerList()
+    ESX.TriggerServerCallback('admin:getOnlinePlayers', function(players)
+        local options = {}
+        
+        table.insert(options, {
+            title = _('select_player_car'),
+            description = _('give_car_to_player'),
+            disabled = true
+        })
+        
+        for _, player in ipairs(players) do
+            table.insert(options, {
+                title = player.name,
+                description = 'ID: ' .. player.id,
+                icon = 'user',
+                onSelect = function()
+                    openGiveCarMenu(player.id, player.name)
+                end
+            })
+        end
+        
+        lib.registerContext({
+            id = 'give_car_player_list',
+            title = _('give_car'),
+            menu = 'admin_panel',
+            options = options
+        })
+        
+        lib.showContext('give_car_player_list')
+    end)
+end
+
+function openGiveCarMenu(playerId, playerName)
+    local inputCar = lib.inputDialog(_('give_car') .. ' - ' .. playerName, {
+        {type = 'input', label = _('vehicle_model'), placeholder = _('vehicle_model_placeholder'), required = true},
+        {type = 'input', label = _('plate'), placeholder = _('plate_placeholder'), required = false}
+    })
+    
+    if not inputCar then return end
+    
+    local vehicleModel = tostring(inputCar[1]):lower()
+    local customPlate = inputCar[2] and tostring(inputCar[2]) or nil
+    if customPlate and customPlate:gsub("%s+", "") == "" then
+        customPlate = nil
+    end
+    
+    if vehicleModel then
+        local confirm = lib.alertDialog({
+            header = _('confirm_give_car'),
+            content = _('confirm_give_car_msg', vehicleModel, playerName, customPlate or _('random')),
+            centered = true,
+            cancel = true,
+            labels = {
+                confirm = _('yes'),
+                cancel = _('no')
+            }
+        })
+        
+        if confirm == 'confirm' then
+            TriggerServerEvent('admin:giveCarToPlayer', playerId, vehicleModel, customPlate)
+        end
+    else
+        ESX.ShowNotification(_('invalid_input'))
+    end
+end
+
+function openGiveCarDialog()
+    local input = lib.inputDialog(_('give_car'), {
+        {type = 'number', label = _('player_id'), placeholder = _('player_id_desc'), required = true},
+        {type = 'input', label = _('vehicle_model'), placeholder = _('vehicle_model_placeholder'), required = true},
+        {type = 'input', label = _('plate'), placeholder = _('plate_placeholder'), required = false}
+    })
+    
+    if not input then return end
+    
+    local targetId = tonumber(input[1])
+    local vehicleModel = tostring(input[2]):lower()
+    local customPlate = input[3] and tostring(input[3]) or nil
+    if customPlate and customPlate:gsub("%s+", "") == "" then
+        customPlate = nil
+    end
+    
+    if targetId and vehicleModel then
+        TriggerServerEvent('admin:giveCarToPlayer', targetId, vehicleModel, customPlate)
+    else
+        ESX.ShowNotification(_('invalid_input'))
+    end
+end
+
+RegisterCommand(Config.GiveCarCommand, function(source, args)
+    ESX.TriggerServerCallback('adminmenu:isAdmin', function(isAdmin)
+        if not isAdmin then
+            lib.notify({
+                title = _('admin_system'),
+                description = _('no_permission'),
+                type = 'error',
+                duration = 3000,
+                position = 'top'
+            })
+            return
+        end
+
+        ESX.TriggerServerCallback('admin:checkDuty', function(onDuty)
+            if not onDuty then
+                lib.notify({
+                    title = _('admin_system'),
+                    description = _('not_on_duty'),
+                    type = 'error',
+                    duration = 3000,
+                    position = 'top'
+                })
+                return
+            end
+            
+            if args and args[1] and args[2] then
+                local targetId = tonumber(args[1])
+                local vehicleModel = args[2]
+                local customPlate = args[3] or nil
+                TriggerServerEvent('admin:giveCarToPlayer', targetId, vehicleModel, customPlate)
+            else
+                openGiveCarDialog()
+            end
+        end)
+    end)
+end, false)
+
+function openRemoveCarDialog()
+    local input = lib.inputDialog(_('remove_car'), {
+        {type = 'input', label = _('plate_to_remove'), placeholder = 'e.g. LAZIC123', required = true}
+    })
+    
+    if not input then return end
+    
+    local plate = tostring(input[1])
+    if plate and plate:gsub("%s+", "") ~= "" then
+        local confirm = lib.alertDialog({
+            header = _('confirm_remove_car'),
+            content = _('confirm_remove_car_msg', plate),
+            centered = true,
+            cancel = true,
+            labels = {
+                confirm = _('yes'),
+                cancel = _('no')
+            }
+        })
+        
+        if confirm == 'confirm' then
+            TriggerServerEvent('admin:removeCarByPlate', plate)
+        end
+    else
+        ESX.ShowNotification(_('invalid_input'))
+    end
+end
+
+local function handleRemoveCar(source, args)
+    ESX.TriggerServerCallback('adminmenu:isAdmin', function(isAdmin)
+        if not isAdmin then
+            lib.notify({
+                title = _('admin_system'),
+                description = _('no_permission'),
+                type = 'error',
+                duration = 3000,
+                position = 'top'
+            })
+            return
+        end
+
+        ESX.TriggerServerCallback('admin:checkDuty', function(onDuty)
+            if not onDuty then
+                lib.notify({
+                    title = _('admin_system'),
+                    description = _('not_on_duty'),
+                    type = 'error',
+                    duration = 3000,
+                    position = 'top'
+                })
+                return
+            end
+            
+            if args and args[1] then
+                local plate = args[1]
+                TriggerServerEvent('admin:removeCarByPlate', plate)
+            else
+                openRemoveCarDialog()
+            end
+        end)
+    end)
+end
+
+RegisterCommand(Config.RemoveCarCommand, handleRemoveCar, false)

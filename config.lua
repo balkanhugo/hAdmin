@@ -182,6 +182,14 @@ Config.Permissions = {
         'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
     },
 
+    givecar = {
+        'developer', 'jaankeza'
+    },
+
+    removecar = {
+        'developer', 'jaankeza'
+    },
+
     fixVehicle = {
         'developer', 'jaankeza',
         'osnivac', 'manager', 'vodjastaffa',
@@ -261,6 +269,9 @@ Config.Noclip = {
 Config.OpenMenuCommand = 'openadmin'
 Config.OpenMenuKey = 'F4'
 Config.OpenMenuLabel = 'Otvori Admin Menu'
+
+Config.GiveCarCommand = 'givecar'
+Config.RemoveCarCommand = 'removecar'
 
 -- =================================
 -- REPORT SYSTEM CONFIGURATION
@@ -376,6 +387,14 @@ Config.AdminLogs = {
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
     givevehicle = {
+        enabled = true,
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
+    },
+    givecar = {
+        enabled = true,
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
+    },
+    removecar = {
         enabled = true,
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     },
