@@ -383,6 +383,23 @@ function openAdminPanel()
                 end
             },
             {
+                title = _('boost_vehicle'),
+                description = _('boost_vehicle_desc'),
+                icon = 'gauge-high',
+                onSelect = function()
+                    if not HasPermission(Config.Permissions.fixVehicle) then
+                        return lib.notify({
+                            title = _('admin_system'),
+                            description = _('no_permission'),
+                            type = 'error',
+                            duration = 3000,
+                            position = 'top'
+                        })
+                    end
+                    boostVehiclePerformance()
+                end
+            },
+            {
                 title = _('leave_duty'),
                 description = _('end_admin_duty'),
                 icon = 'power-off',
@@ -581,7 +598,8 @@ function popravijebenovozilo()
             title = _('admin_system'),
             description = _('must_be_in_vehicle'),
             type = 'error',
-            duration = 3000
+            duration = 3000,
+            position = 'top'
         })
         return
     end
@@ -598,7 +616,78 @@ function popravijebenovozilo()
         title = _('admin_system'),
         description = _('vehicle_fixed'),
         type = 'success',
-        duration = 3000
+        duration = 3000,
+        position = 'top'
+    })
+end
+
+function boostVehiclePerformance()
+    local playerPed = PlayerPedId()
+
+    if not IsPedInAnyVehicle(playerPed, false) then
+        lib.notify({
+            title = _('admin_system'),
+            description = _('must_be_in_vehicle'),
+            type = 'error',
+            duration = 3000,
+            position = 'top'
+        })
+        return
+    end
+
+    local vehicle = GetVehiclePedIsIn(playerPed, false)
+
+    -- Fully tune the vehicle performance mods
+    SetVehicleModKit(vehicle, 0)
+    
+    -- Engine, Brakes, Transmission, Suspension, Armor
+    local mods = {
+        [11] = GetNumVehicleMods(vehicle, 11) - 1,
+        [12] = GetNumVehicleMods(vehicle, 12) - 1,
+        [13] = GetNumVehicleMods(vehicle, 13) - 1,
+        [15] = GetNumVehicleMods(vehicle, 15) - 1,
+        [16] = GetNumVehicleMods(vehicle, 16) - 1,
+    }
+
+    for modType, maxMod in pairs(mods) do
+        if maxMod >= 0 then
+            SetVehicleMod(vehicle, modType, maxMod, false)
+        end
+    end
+
+    -- Toggle Turbo
+    ToggleVehicleMod(vehicle, 18, true)
+    
+    -- Bulletproof tires
+    SetVehicleTyresCanBurst(vehicle, false)
+    
+    -- Xenon headlights
+    ToggleVehicleMod(vehicle, 22, true)
+    
+    -- Custom engine multipliers for premium performance boost!
+    SetVehicleEnginePowerMultiplier(vehicle, 2.0)
+    SetVehicleEngineTorqueMultiplier(vehicle, 2.0)
+
+    -- Repair and clean vehicle
+    SetVehicleFixed(vehicle)
+    SetVehicleDeformationFixed(vehicle)
+    SetVehicleDirtLevel(vehicle, 0.0)
+    SetVehicleEngineOn(vehicle, true, true)
+
+    -- Log action to server
+    local vehicleModel = GetEntityModel(vehicle)
+    local vehicleName = GetLabelText(GetDisplayNameFromVehicleModel(vehicleModel))
+    if vehicleName == "CARNOTFOUND" then
+        vehicleName = GetDisplayNameFromVehicleModel(vehicleModel)
+    end
+    TriggerServerEvent('admin:logBoostVehicle', vehicleName)
+
+    lib.notify({
+        title = _('admin_system'),
+        description = _('vehicle_boosted'),
+        type = 'success',
+        duration = 3000,
+        position = 'top'
     })
 end
 

@@ -152,6 +152,9 @@ Locales['en'] = {
     ['vehicle_fixed'] = 'You successfully fixed the vehicle',
     ['delete_vehicle'] = 'Delete Vehicle',
     ['delete_vehicle_desc'] = 'Delete vehicle',
+    ['boost_vehicle'] = 'Boost Vehicle Performance',
+    ['boost_vehicle_desc'] = 'Fully tune and boost vehicle performance',
+    ['vehicle_boosted'] = 'Vehicle performance boosted successfully!',
     
     -- Player Actions
     ['revive_player'] = 'Revive Player',

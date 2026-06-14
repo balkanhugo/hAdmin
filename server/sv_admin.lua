@@ -147,7 +147,7 @@ ESX.RegisterServerCallback('admin:setPlayerGroup', function(source, cb, targetId
             description = _('group_changed_notification') .. newGroup .. _('by_admin') .. admin.getName(),
             type = "inform",
             duration = 5000,
-            position = "top-right"
+            position = "top-left"
         })
     end
 
@@ -186,6 +186,29 @@ AddEventHandler('admin:giveVehicleToPlayer', function(targetId, vehicleModel, sp
         TriggerClientEvent('esx:showNotification', src, _('sent_vehicle', vehicleModel, GetPlayerName(targetId)))
     else
         TriggerClientEvent('esx:showNotification', src, _('no_permission'))
+    end
+end)
+
+RegisterServerEvent('admin:logBoostVehicle')
+AddEventHandler('admin:logBoostVehicle', function(vehicleName)
+    local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
+    if not xPlayer then return end
+
+    local group = xPlayer.getGroup()
+    
+    if HasPermission(group, 'fixVehicle') then
+        print(("[ADMIN] %s boosted vehicle %s performance"):format(
+            GetPlayerName(src),
+            vehicleName
+        ))
+
+        SendAdminLog(
+            "boostvehicle",
+            "ADMIN BOOST VEHICLE",
+            "**Admin:** "..GetPlayerName(src).." (ID "..src..")\n**Vehicle:** "..vehicleName,
+            16753920
+        )
     end
 end)
 
@@ -604,7 +627,7 @@ AddEventHandler('reports:createReport', function(title, category, details)
             description = _('report_cooldown_msg', math.ceil(remaining/60)),
             type = "error",
             duration = 5000,
-            position = "top-right"
+            position = "top-left"
         })
         return
     end
@@ -634,7 +657,7 @@ AddEventHandler('reports:createReport', function(title, category, details)
                     description = steamName .. _('sent_report') .. title,
                     type = "inform",
                     duration = 5000,
-                    position = "top-right"
+                    position = "top-left"
                 })
             end
         end
@@ -645,7 +668,7 @@ AddEventHandler('reports:createReport', function(title, category, details)
         description = _('report_sent'),
         type = "success",
         duration = 5000,
-        position = "top-right"
+        position = "top-left"
     })
 end)
 

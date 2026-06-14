@@ -2,11 +2,10 @@ fx_version 'adamant'
 
 game 'gta5'
 
-description 'hAdmin'
-author 'Lazic and chiaroscuric'
+description 'admin panel'
+author 'Lazic and chyaro group'
 lua54 'yes'
-version '1.0.4'
-legacyversion '1.9.1'
+version '1.1.0'
 
 server_script {
 	'@oxmysql/lib/MySQL.lua',

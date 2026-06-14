@@ -143,7 +143,7 @@ function setupScaleform(scaleform)
     PushScaleformMovieFunction(sf, "SET_DATA_SLOT")
     PushScaleformMovieFunctionParameterInt(0)
     Button(GetControlInstructionalButton(2, Config.Noclip.controls.changeSpeed, true))
-    ButtonMessage("Brzina (" .. Config.Noclip.speeds[index].label .. ")")
+    ButtonMessage("Brzina (" .. _U(Config.Noclip.speeds[index].label_key) .. ")")
     PopScaleformMovieFunctionVoid()
 
     PushScaleformMovieFunction(sf, "DRAW_INSTRUCTIONAL_BUTTONS")

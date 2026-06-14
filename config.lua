@@ -394,5 +394,13 @@ Config.AdminLogs = {
     communityservice = {
         enabled = true,
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
+    },
+    boostvehicle = {
+        enabled = true,
+        webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
+
+-- =================================
+-- NOCLIP CONFIGURATION
+-- =================================

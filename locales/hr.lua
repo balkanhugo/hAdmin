@@ -151,7 +151,10 @@ Locales['hr'] = {
     ['must_be_in_vehicle'] = 'Moras biti u vozilu',
     ['vehicle_fixed'] = 'Uspesno si popravio vozilo',
     ['delete_vehicle'] = 'Delete Vehicle',
-    ['delete_vehicle_desc'] = 'Obrisi vozilo',
+    ['delete_vehicle_desc'] = 'Obriši vozilo',
+    ['boost_vehicle'] = 'Poboljšaj Performanse Vozila',
+    ['boost_vehicle_desc'] = 'Maksimalno nabudži i ubrzaj vozilo',
+    ['vehicle_boosted'] = 'Performanse vozila su uspješno poboljšane!',
     
     -- Player Actions
     ['revive_player'] = 'Revive Player',
