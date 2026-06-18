@@ -5,7 +5,7 @@ game 'gta5'
 description 'admin panel'
 author 'Lazic and chyaro group'
 lua54 'yes'
-version '1.1.1'
+version '1.2.0'
 
 server_script {
 	'@oxmysql/lib/MySQL.lua',

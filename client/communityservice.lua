@@ -98,20 +98,28 @@ AddEventHandler('tj_communityservice:inService', function(actions)
     ShowRemainingActions()
     
     CreateThread(function()
+        -- Thread A: Combat disable MUST run every frame so the game doesn't
+        -- process the blocked inputs before we suppress them.
         while isInService do
             Wait(0)
             DisableCombat()
-            
+        end
+    end)
+
+    CreateThread(function()
+        -- Thread B: Position boundary check — 500ms is more than enough to
+        -- catch a player wandering out of bounds without hammering every frame.
+        while isInService do
+            Wait(500)
             local playerCoords = GetEntityCoords(PlayerPedId())
             local distance = #(playerCoords - Config.CommunityService.ServiceLocation)
-            
+
             if distance > Config.CommunityService.MaxDistance then
                 SetEntityCoords(PlayerPedId(), Config.CommunityService.ServiceLocation.x, Config.CommunityService.ServiceLocation.y, Config.CommunityService.ServiceLocation.z)
             end
-            
-            ShowRemainingActions()
         end
     end)
+
 end)
 
 RegisterNetEvent('tj_communityservice:updateActions')
@@ -178,7 +186,7 @@ lib.registerContext({
                 local players = lib.callback.await('tj_communityservice:getActivePlayers')
                 local options = {}
                 
-                for _, player in ipairs(players) do
+                for k, player in ipairs(players) do
                     table.insert(options, {
                         title = player.name,
                         description = string.format(_('remaining_resaon'), player.remaining, player.total, player.reason),

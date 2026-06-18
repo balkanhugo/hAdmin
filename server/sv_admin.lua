@@ -577,7 +577,7 @@ AddEventHandler('admin:revivePlayer', function(targetId)
     local group = xPlayer.getGroup()
     
     if HasPermission(group, 'revive') then
-        TriggerClientEvent('esx_ambulancejob:revive', targetId)
+        TriggerClientEvent('admin:doRevive', targetId)
 
         print("Admin " .. GetPlayerName(src) .. " revived player " .. GetPlayerName(targetId))
         TriggerClientEvent('esx:showNotification', src, _('player_revived', GetPlayerName(targetId)))
@@ -878,3 +878,73 @@ function GeneratePlate()
     
     return plate
 end
+
+ESX.RegisterCommand('heal', Config.Permissions.heal, function(xPlayer, args, showError)
+    if xPlayer and not xPlayer.proveriDuznost() then
+        xPlayer.showNotification(_('not_on_duty'))
+        return
+    end
+
+    local target = args.playerId or xPlayer
+    if target then
+        TriggerClientEvent('admin:doHeal', target.source)
+        
+        local adminName = xPlayer and xPlayer.getName() or "Console"
+        local adminSource = xPlayer and xPlayer.source or 0
+        
+        if xPlayer then
+            xPlayer.showNotification(string.format("Izliječili ste igrača ~g~%s~s~.", target.getName()))
+        else
+            print(string.format("[cAdmin] Izliječili ste igrača %s.", target.getName()))
+        end
+
+        SendAdminLog(
+            "heal",
+            "ADMIN HEAL (COMMAND)",
+            "**Admin:** "..adminName.." (ID "..adminSource..")\n**Target:** "..target.getName().." (ID "..target.source..")",
+            65280
+        )
+    else
+        print("[cAdmin] Morate navesti ID igrača kada pokrećete naredbu iz konzole.")
+    end
+end, true, {
+    help = "Izliječi sebe ili drugog igrača",
+    arguments = {
+        { name = 'playerId', help = 'ID igrača (opcionalno)', type = 'player' }
+    }
+})
+
+ESX.RegisterCommand('revive', Config.Permissions.revive, function(xPlayer, args, showError)
+    if xPlayer and not xPlayer.proveriDuznost() then
+        xPlayer.showNotification(_('not_on_duty'))
+        return
+    end
+
+    local target = args.playerId or xPlayer
+    if target then
+        TriggerClientEvent('admin:doRevive', target.source)
+        
+        local adminName = xPlayer and xPlayer.getName() or "Console"
+        local adminSource = xPlayer and xPlayer.source or 0
+        
+        if xPlayer then
+            xPlayer.showNotification(string.format("Oživili ste igrača ~g~%s~s~.", target.getName()))
+        else
+            print(string.format("[cAdmin] Oživili ste igrača %s.", target.getName()))
+        end
+
+        SendAdminLog(
+            "revive",
+            "ADMIN REVIVE (COMMAND)",
+            "**Admin:** "..adminName.." (ID "..adminSource..")\n**Target:** "..target.getName().." (ID "..target.source..")",
+            16711680
+        )
+    else
+        print("[cAdmin] Morate navesti ID igrača kada pokrećete naredbu iz konzole.")
+    end
+end, true, {
+    help = "Oživi sebe ili drugog igrača",
+    arguments = {
+        { name = 'playerId', help = 'ID igrača (opcionalno)', type = 'player' }
+    }
+})

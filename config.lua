@@ -15,68 +15,36 @@ Config.Groups = {
     -- Order of groups (lowest to highest)
     order = {
         'user',
-        'probniadmin',
-        'admin',
-        'roleplayadmin',
-        'eventadmin',
-        'headstaff',
-        'vodjalidera',
-        'vodjastaffa',
-        'manager',
+        'designer',
+        'car_developer',
         'osnivac',
-        'jaankeza',
-        'developer'
+        'scripter'
     },
 
     labels = {
         user          = 'User',
-        probniadmin   = 'Probni Admin',
-        admin         = 'Admin',
-        roleplayadmin = 'Roleplay Admin',
-        eventadmin    = 'Event Admin',
-        headstaff     = 'Head Staff',
-        vodjalidera   = 'Vodja Lidera',
-        vodjastaffa   = 'Vodja Staffa',
-        manager       = 'Manager',
+        designer      = 'Designer',
+        car_developer = 'Car Developer',
         osnivac       = 'Osnivac',
-        jaankeza      = 'Jaankeza',
-        developer     = 'Developer'
+        scripter      = 'Scripter'
     },
 
     index = {
         user          = 1,
-        probniadmin   = 2,
-        admin         = 3,
-        roleplayadmin = 4,
-        eventadmin    = 5,
-        headstaff     = 6,
-        vodjalidera   = 7,
-        vodjastaffa   = 8,
-        manager       = 9,
-        osnivac       = 10,
-        jaankeza      = 11,
-        developer     = 12
+        designer      = 2,
+        car_developer = 3,
+        osnivac       = 4,
+        scripter      = 5
     },
 
     -- Who can set which groups
     permissions = {
-        developer = {
-            'user','probniadmin','admin','roleplayadmin','eventadmin',
-            'headstaff','vodjalidera','vodjastaffa','manager','osnivac','jaankeza'
-        },
-
-        jaankeza = {
-            'user','probniadmin','admin','roleplayadmin','eventadmin',
-            'headstaff','vodjalidera','vodjastaffa','manager','osnivac'
+        scripter = {
+            'user', 'designer', 'car_developer', 'osnivac'
         },
 
         osnivac = {
-            'user','probniadmin','admin','roleplayadmin','eventadmin',
-            'headstaff','vodjalidera','vodjastaffa','manager'
-        },
-
-        manager = {
-            'user','probniadmin','admin','roleplayadmin','eventadmin'
+            'user', 'designer', 'car_developer'
         }
     }
 }
@@ -100,35 +68,21 @@ Config.AdminTags = {
 
     -- Colors for admin group
     Colors = {
-        developer     = { r = 5, g = 228, b = 64, a = 1.0 },
-        jaankeza      = { r = 0, g = 0, b = 255, a = 1.0 },
+        scripter      = { r = 5, g = 228, b = 64, a = 1.0 },
         osnivac       = { r = 255, g = 140, b = 0, a = 1.0 },
-        manager       = { r = 0, g = 140, b = 255, a = 1.0 },
-        vodjastaffa   = { r = 160, g = 32, b = 240, a = 1.0 },
-        vodjalidera   = { r = 138, g = 43, b = 226, a = 1.0 },
-        headstaff     = { r = 255, g = 215, b = 0, a = 1.0 },
-        eventadmin    = { r = 0, g = 255, b = 255, a = 1.0 },
-        roleplayadmin = { r = 50, g = 205, b = 50, a = 1.0 },
-        admin         = { r = 255, g = 255, b = 255, a = 1.0 },
-        probniadmin   = { r = 180, g = 180, b = 180, a = 1.0 }
+        car_developer = { r = 0, g = 140, b = 255, a = 1.0 },
+        designer      = { r = 160, g = 32, b = 240, a = 1.0 }
     },
 
     DefaultColor = { r = 255, g = 255, b = 255, a = 1.0 }
 }
 
 Config.PermissionLabels = {
-    [1]  = "USER",
-    [2]  = "PROBNI ADMIN",
-    [3]  = "ADMIN",
-    [4]  = "RP ADMIN",
-    [5]  = "EVENT ADMIN",
-    [6]  = "HEAD STAFF",
-    [7]  = "VODJA LIDERA",
-    [8]  = "VODJA STAFFA",
-    [9]  = "MANAGER",
-    [10] = "OSNIVAC",
-    [11] = "JAANKEZA",
-    [12] = "DEVELOPER"
+    [1] = "USER",
+    [2] = "DESIGNER",
+    [3] = "CAR DEVELOPER",
+    [4] = "OSNIVAC",
+    [5] = "SKRIPTER"
 }
 
 -- =================================
@@ -136,88 +90,61 @@ Config.PermissionLabels = {
 -- =================================
 Config.Permissions = {
     noclip = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     invisible = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     heal = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     revive = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     setJob = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa', 'vodjalidera',
-        'headstaff'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
-    setGroup = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa'
-    },
+    setGroup = {},
 
     giveItem = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     giveVehicle = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     givecar = {
-        'developer', 'jaankeza'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     removecar = {
-        'developer', 'jaankeza'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     fixVehicle = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     markeri = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     gotoplayer = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     bringplayer = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin', 'probniadmin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     },
 
     teleportwaypoint = {
-        'developer', 'jaankeza',
-        'osnivac', 'manager', 'vodjastaffa',
-        'headstaff', 'eventadmin', 'roleplayadmin', 'admin'
+        'scripter', 'car_developer', 'designer', 'osnivac'
     }
 }
 
@@ -301,11 +228,9 @@ Config.CommunityService = {
     -- Groups that can access community service commands
     AuthorizedGroups = {
         ["osnivac"] = true,
-        ["developer"] = true,
-        ["jaankeza"] = true,
-        ["manager"] = true,
-        ["vodjastaffa"] = true,
-        ["headstaff"] = true,
+        ["scripter"] = true,
+        ["car_developer"] = true,
+        ["designer"] = true
     },
 
     -- Jobs that can use community service (via ox_target)
@@ -419,7 +344,3 @@ Config.AdminLogs = {
         webhook = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"
     }
 }
-
--- =================================
--- NOCLIP CONFIGURATION
--- =================================

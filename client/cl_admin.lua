@@ -768,19 +768,33 @@ end
 -- Continuation of cl_admin.lua with localization
 
 function openSetGroupPlayerList()
-    ESX.TriggerServerCallback('admin:getOnlinePlayers', function(players)   
+    ESX.TriggerServerCallback('admin:getOnlinePlayers', function(players)
         local options = {}
-        
+        local loaded = 0
+        local total = #players
+
         table.insert(options, {
             title = _('select_player_group'),
             description = _('change_player_group'),
             disabled = true
         })
-        
-        for _, player in ipairs(players) do
+
+        if total == 0 then
+            lib.registerContext({
+                id = 'setgroup_player_list',
+                title = _('set_group'),
+                menu = 'admin_panel',
+                options = options
+            })
+            lib.showContext('setgroup_player_list')
+            return
+        end
+
+        for k, player in ipairs(players) do
             ESX.TriggerServerCallback('admin:getPlayerCurrentGroup', function(currentGroup)
+                loaded = loaded + 1
                 local groupLabel = getGroupLabel(currentGroup) or _('unknown')
-                
+
                 table.insert(options, {
                     title = player.name,
                     description = 'ID: ' .. player.id .. ' | ' .. _('current_group') .. ': ' .. groupLabel,
@@ -792,24 +806,24 @@ function openSetGroupPlayerList()
                         openGroupSelectionMenu(player.id, player.name, currentGroup)
                     end
                 })
+
+                if loaded == total then
+                    table.sort(options, function(a, b)
+                        if a.disabled or b.disabled then return false end
+                        return a.title < b.title
+                    end)
+
+                    lib.registerContext({
+                        id = 'setgroup_player_list',
+                        title = _('set_group'),
+                        menu = 'admin_panel',
+                        options = options
+                    })
+
+                    lib.showContext('setgroup_player_list')
+                end
             end, player.id)
         end
-        
-        Citizen.Wait(300)
-        
-        table.sort(options, function(a, b)
-            if a.disabled or b.disabled then return false end
-            return a.title < b.title
-        end)
-        
-        lib.registerContext({
-            id = 'setgroup_player_list',
-            title = _('set_group'),
-            menu = 'admin_panel',
-            options = options
-        })
-        
-        lib.showContext('setgroup_player_list')
     end)
 end
 
@@ -841,7 +855,7 @@ function openGroupSelectionMenu(playerId, playerName, currentGroup)
             disabled = true
         })
 
-        for _, group in ipairs(Config.Groups.order) do
+        for k, group in ipairs(Config.Groups.order) do
             local canSet = canSetGroup(myGroup, group)
             local reason = ""
 
@@ -973,7 +987,7 @@ function openTeleportToPlayerList()
             disabled = true
         })
         
-        for _, player in ipairs(players) do
+        for k, player in ipairs(players) do
             table.insert(options, {
                 title = player.name,
                 description = 'ID: ' .. player.id,
@@ -1012,7 +1026,7 @@ function openSetJobPlayerList()
             return
         end
 
-        for _, player in ipairs(players) do
+        for k, player in ipairs(players) do
             ESX.TriggerServerCallback('admin:getPlayerCurrentJob', function(currentJob)
                 loaded = loaded + 1
 
@@ -1080,7 +1094,7 @@ function openJobSelectionMenu(playerId, playerName, currentJob)
             return a.label < b.label
         end)
         
-        for _, job in ipairs(sortedJobs) do
+        for k, job in ipairs(sortedJobs) do
             table.insert(options, {
                 title = job.label,
                 description = _('select_job') .. ': ' .. job.label,
@@ -1127,7 +1141,7 @@ function openGradeSelectionMenu(playerId, playerName, jobName, jobData, currentJ
         return a.grade < b.grade
     end)
     
-    for _, gradeItem in ipairs(sortedGrades) do
+    for k, gradeItem in ipairs(sortedGrades) do
         local gradeNum = gradeItem.grade
         local gradeData = gradeItem.data
         
@@ -1209,7 +1223,7 @@ function openHealPlayerList()
             disabled = true
         })
         
-        for _, player in ipairs(players) do
+        for k, player in ipairs(players) do
             table.insert(options, {
                 title = player.name,
                 description = 'ID: ' .. player.id,
@@ -1242,7 +1256,7 @@ function openRevivePlayerList()
             disabled = true
         })
         
-        for _, player in ipairs(players) do
+        for k, player in ipairs(players) do
             table.insert(options, {
                 title = player.name,
                 description = 'ID: ' .. player.id,
@@ -1275,7 +1289,7 @@ function openBringPlayerList()
             disabled = true
         })
         
-        for _, player in ipairs(players) do
+        for k, player in ipairs(players) do
             table.insert(options, {
                 title = player.name,
                 description = 'ID: ' .. player.id,
@@ -1449,23 +1463,15 @@ end)
 RegisterNetEvent('admin:doHeal')
 AddEventHandler('admin:doHeal', function()
     local ped = PlayerPedId()
-    local maxHealth = GetEntityMaxHealth(ped)
-    local health = GetEntityHealth(ped)
-    local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 8))
-
-    if not HasPermission(Config.Permissions.heal) then
-        return lib.notify({
-            title = _('admin_system'),
-            description = _('no_permission'),
-            type = 'error',
-            duration = 3000
-        })
-    end
-
-    ClearPedBloodDamage(ped)
-    ResetPedVisibleDamage(ped)
-    ClearPedLastWeaponDamage(ped)
+    
+    -- Restore health and armor
     SetEntityHealth(ped, GetEntityMaxHealth(ped))
+    SetPedArmour(ped, 100)
+    ClearPedBloodDamage(ped)
+    
+    -- Dismiss death screen if they were dead
+    TriggerEvent('cDeathScreen:revive')
+    
     ESX.ShowNotification(_('admin_healed_you'))
 end)
 
@@ -1493,31 +1499,23 @@ RegisterNetEvent('admin:doRevive')
 AddEventHandler('admin:doRevive', function()
     local ped = PlayerPedId()
     local maxHealth = GetEntityMaxHealth(ped)
-
-    if not HasPermission(Config.Permissions.revive) then
-        return lib.notify({
-            title = _('admin_system'),
-            description = _('no_permission'),
-            type = 'error',
-            duration = 3000
-        })
+    
+    local isDead = false
+    if GetResourceState('cDeathScreen') == 'started' then
+        isDead = exports['cDeathScreen']:IsDead()
     end
     
-    if IsPedDeadOrDying(ped) then
+    if IsPedDeadOrDying(ped) or isDead then
         local coords = GetEntityCoords(ped)
-        
         NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, GetEntityHeading(ped), true, false)
         SetEntityHealth(ped, maxHealth)
         ClearPedBloodDamage(ped)
         ResetPedVisibleDamage(ped)
         ClearPedLastWeaponDamage(ped)
-        
-        local playerServerId = GetPlayerServerId(PlayerId())
-        TriggerServerEvent('admin:revivePlayer', playerServerId)
-        ESX.ShowNotification(_('admin_revived_you'))
-    else
-        ESX.ShowNotification(_('not_dead'))
     end
+    
+    TriggerEvent('cDeathScreen:revive')
+    ESX.ShowNotification(_('admin_revived_you'))
 end)
 
 function openGiveItemPlayerList()
